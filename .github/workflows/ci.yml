@@ -1,0 +1,92 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  app:
+    name: Lint, type check, test and bundle
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      # The Expo app arrives in WISH-1. Until then this job only checks out and stops.
+      - id: has
+        run: if [ -f package.json ]; then echo "app=true" >> "$GITHUB_OUTPUT"; fi
+      - if: steps.has.outputs.app == 'true'
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - if: steps.has.outputs.app == 'true'
+        run: npm ci
+      - if: steps.has.outputs.app == 'true'
+        run: npm run lint
+      - if: steps.has.outputs.app == 'true'
+        run: npx tsc --noEmit
+      - if: steps.has.outputs.app == 'true'
+        run: npm test -- --ci
+      - if: steps.has.outputs.app == 'true'
+        run: npm run build
+
+  functions:
+    name: Edge Functions (deno check and test)
+    runs-on: ubuntu-latest
+    env:
+      # The functions import with npm: and jsr: specifiers; the app's package.json is not theirs.
+      DENO_NO_PACKAGE_JSON: "1"
+    steps:
+      - uses: actions/checkout@v4
+      # The first Edge Function arrives in WISH-10. Until then this job only checks out and stops.
+      - id: has
+        run: if ls supabase/functions/*/index.ts >/dev/null 2>&1; then echo "functions=true" >> "$GITHUB_OUTPUT"; fi
+      - if: steps.has.outputs.functions == 'true'
+        uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+      - if: steps.has.outputs.functions == 'true'
+        run: deno check supabase/functions/*/index.ts
+      - if: steps.has.outputs.functions == 'true'
+        run: deno test --allow-env supabase/functions
+
+  rls:
+    name: RLS tests
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: wish_rls_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      PGHOST: localhost
+      PGUSER: postgres
+      PGPASSWORD: postgres
+      PGDATABASE: wish_rls_test
+    steps:
+      - uses: actions/checkout@v4
+      - name: Supabase stand-in
+        run: psql -v ON_ERROR_STOP=1 -f supabase/tests/local_stub.sql
+      - name: Migrations
+        run: |
+          for f in supabase/migrations/*.sql; do
+            echo "Applying $f"
+            psql -v ON_ERROR_STOP=1 -f "$f"
+          done
+      - name: RLS checks
+        run: psql -v ON_ERROR_STOP=1 -f supabase/tests/rls_test.sql
