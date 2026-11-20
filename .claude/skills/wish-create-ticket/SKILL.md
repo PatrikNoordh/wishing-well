@@ -81,7 +81,7 @@ Also check the highest `WISH-<N>` in `TICKETS.md` and use whichever is higher. C
 
 ## Step 4 — Milestone and labels
 
-**Milestone:** the epic the work belongs to, using the exact `## Epic N — Name` heading from `TICKETS.md` (for example `Epic 3 — Sharing and reservations`). Ask if unsure.
+**Milestone:** the epic the work belongs to, using the exact `## Epic N — Name` heading from `TICKETS.md` (for example `Epic 3 — Contacts' wishes and reservations`). Work that fits no epic goes in the latest open epic. Ask if unsure.
 
 **Labels:**
 - The type from Step 1
@@ -91,10 +91,11 @@ Also check the highest `WISH-<N>` in `TICKETS.md` and use whichever is higher. C
 - `ai` if it touches the AI layer or the evaluation
 - Any label or milestone the request names, for example `priority:high` from `wish-audit-to-issues`
 
-Create a label if it is missing (safe to re-run):
+Create a label only if `gh label list` does not have it, and never with `--force`: on a label that exists, `--force` resets its colour and description. Safe to re-run:
 
 ```bash
-gh label create "<label>" --repo "$REPO" --force
+gh label list --repo "$REPO" --limit 200 --json name --jq '.[].name' | grep -qxF "<label>" \
+  || gh label create "<label>" --repo "$REPO"
 ```
 
 ---
@@ -225,6 +226,7 @@ Creates one issue per ticket in `TICKETS.md`. Run it once, before the first pull
    ```bash
    gh issue list --repo "$REPO" --state all --json number,title --limit 300
    ```
+   A ticket exists if an issue title starts with `[WISH-<N>]`.
 
 3. **Create missing milestones** (gh has no milestone command, so use the API):
    ```bash
@@ -232,14 +234,14 @@ Creates one issue per ticket in `TICKETS.md`. Run it once, before the first pull
    gh api "repos/$REPO/milestones" -f title="Epic 0 — Foundation" -f description="<first paragraph under the heading, if any>"
    ```
 
-4. **Create the labels** with `gh label create ... --force`: the types, plus `security` for WISH-6, WISH-7, WISH-9, WISH-10, WISH-13, WISH-14, WISH-16, WISH-18, WISH-22 and WISH-23; `database` for WISH-6 and WISH-23; `native` for WISH-1, WISH-13, WISH-14 and WISH-20; `ai` for WISH-21 to WISH-25.
+4. **Create the missing labels** as in Step 4: only the ones `gh label list` does not have, never with `--force`. The types, plus `security` for WISH-6, WISH-7, WISH-9, WISH-10, WISH-13, WISH-14, WISH-16, WISH-18, WISH-22 and WISH-23; `database` for WISH-6 and WISH-23; `native` for WISH-1, WISH-13, WISH-14 and WISH-20; `ai` for WISH-21 to WISH-25.
 
 5. **Create the issues in WISH order**, one at a time:
    - Title: `[WISH-<N>] <Title>`
-   - Body: the ticket's block from `TICKETS.md` as it is, plus a final line `Source: TICKETS.md`
+   - Body: the ticket's block from `TICKETS.md` as it is, including `- [x]` items, plus a final line `Source: TICKETS.md`
    - The epic's `**Checkpoint:**` line goes in the body of the last ticket in that epic
 
-6. **Close tickets that are already done** (every AC `- [x]`), with a comment that says so.
+6. **Close tickets that are already done.** A ticket is done only if every AC is `- [x]`. Close it with a comment that says so. Leave everything else open.
 
 7. **Report** a table of WISH id, issue number, milestone and state. Flag any ticket where the issue number does not match the WISH number.
 

@@ -29,12 +29,12 @@ git rev-parse --abbrev-ref HEAD
 
 - On `main`: **stop**. Direct pushes to `main` are not allowed. Use `wish-git-branch-and-ship`
 - The branch must follow `wish/WISH-<N>-...`. Extract `WISH-<N>`
-- Exception: an epic close-out branch `wish/epic-<N>-review` from `wish-epic-close`. Use `[Epic <N>]` wherever this skill says `[WISH-<N>]`, skip the issue lookup, and leave out `Closes`
+- Exception: an epic close-out branch `wish/epic-<N>-review` from `wish-epic-close`. Use `[Epic <N>]` wherever this skill says `[WISH-<N>]`, skip the issue lookup, and leave out `Closes`. In the PR body, link the issues the close-out changed instead (the ACs it added and the hygiene ticket it created)
 - Find the issue:
   ```bash
   gh issue list --repo "$REPO" --state all --search "WISH-<N> in:title" --json number,title,url,body --limit 10
   ```
-  Use the one whose title starts with exactly `[WISH-<N>]`. If none exists, warn and continue without `Closes`
+  Use the one whose title starts with exactly `[WISH-<N>]`. Note its number and URL. If none exists, warn and continue without `Closes`
 
 ---
 
@@ -110,15 +110,21 @@ gh pr create --repo "$REPO" --base main --title "<type> [WISH-<N>] <Title Case S
 
 ## Step 7 — After the PR is open
 
-- **Migration:** it reaches the project before the merge (`CLAUDE.md` § Workflow). Claude prints each command for the developer to run and paste back:
-  1. `npx supabase db push --remote --dry-run` — must list only this branch's migrations
-  2. With the developer's yes: `npx supabase db push --remote`
+- **Migration:** it reaches the project before the merge (`CLAUDE.md` § Workflow). Claude never runs a command against the linked project, not even a read-only one: it prints each command for the developer to run in their own terminal and paste back, with these instructions:
+  1. "Run `npx supabase db push --remote --dry-run` and paste the output." It must list only this branch's migrations; if it lists anything else, stop. Tell the developer to keep `--remote`: without it, Supabase CLI v3 targets the local stack, not the project
+  2. With the developer's yes: "Run `npx supabase db push --remote` and answer yes at its prompt." CLI v3 asks before it applies anything and defaults to No, so pressing Enter applies nothing
   3. `npx supabase gen types typescript --remote > src/lib/supabase/types.ts && npx prettier --write src/lib/supabase/types.ts`; Claude runs `git diff src/lib/supabase/types.ts`, and commits and pushes a diff
   4. If tables, policies or functions changed: the developer runs `supabase/tests/rls_test.sql` in the SQL Editor; the result goes in the PR's Validation section
 - **Edge Function:** the developer deploys it (`npx supabase functions deploy <name>`) before the merge when the code on `main` will call it, and after the merge otherwise. New secrets: the developer sets them (`npx supabase secrets set …`)
 - **Native change:** the developer builds and installs a new development build before testing (`eas build --profile development --platform android`)
 - Tell the developer to wait for CI before merging, and suggest `/wish-review-pr <number>`
-- Ask: "Tick AC1–AC<n> on #<number> now that the PR covers them?" Tick them only after a yes, and only the ACs the PR marks `- [x]`
+- Always ask (not for `wish/epic-<N>-review`): "Tick AC1–AC<n> on #<number> now that the PR covers them?" Tick them only after a yes, and only the ACs the PR marks `- [x]`, step by step through a file in the scratchpad directory, never in the repo:
+  1. Save the current body: `gh issue view <number> --repo "$REPO" --json body -q .body > "<scratchpad>/body<number>.md"`
+  2. Copy it to `<scratchpad>/new<number>.md` and change only the verified items from `- [ ]` to `- [x]`. Leave every other line, including `Source: TICKETS.md`, as it is
+  3. Compare the two files, then: `gh issue edit <number> --repo "$REPO" --body-file "<scratchpad>/new<number>.md"`
+  4. Say which ACs were ticked
+
+  If the answer is no, say that `/wish-review-pr` ticks them when it approves.
 
 ---
 
@@ -132,4 +138,4 @@ gh pr create --repo "$REPO" --base main --title "<type> [WISH-<N>] <Title Case S
 - [ ] Push succeeded, no force-push
 - [ ] PR to `main` with the template filled in and `Closes #<number>` (not for `wish/epic-<N>-review`)
 - [ ] PR URL shown
-- [ ] Asked whether to tick the issue's ACs
+- [ ] Asked whether to tick the issue's ACs (not for `wish/epic-<N>-review`)

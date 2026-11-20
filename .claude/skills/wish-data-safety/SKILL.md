@@ -36,7 +36,8 @@ Data safety: no data path touched (<n> files, all <UI / docs / tests>). Nothing 
 1. Read `docs/data-safety.md`.
 2. Read the diff of the data paths: `git diff origin/main...HEAD -- <paths>`.
 3. For each changed table, function, policy, grant, bucket or flow, find its rows in the map and read the files those rows name: the migration that last defined it, the Edge Function handler, the `src/lib/api/` file, the checks in `rls_test.sql`. Follow a delete chain one step past the changed table in each direction.
-4. Do not read the rest of the repo. If the map has no row for something the diff changes, that is a finding in itself.
+4. If the diff adds, drops or moves a foreign key, or renames a table or a column a key uses, grep the data layer for PostgREST embeds across it, for each table at either end of the key: `grep -rnE "<table>(!\w+)?\(" src/lib/api/`. An embed such as `profiles(display_name)` or `list_items(count)` in a supabase-js `select` needs a foreign key between the two tables; without one PostgREST answers `PGRST200` at run time, and no type check or unit test sees it. Each embed the diff breaks is a 🔴 finding, and one without a test that runs the query against a real database is a gap.
+5. Do not read the rest of the repo. If the map has no row for something the diff changes, that is a finding in itself.
 
 ### Step 3 — The lenses
 
@@ -49,6 +50,7 @@ Ask each question of every change the diff reaches. Each "yes" or "not sure" bec
 | **Order, repeat, half done** | Can the steps run in the wrong order? Run twice? Stop halfway? |
 | **References and deletes** | What references this row, and what does it reference, with which `on delete`? Does a delete reach data it should not, or leave orphans (rows or photos)? |
 | **Database and Storage** | Does a flow write to both without a shared transaction? Is its worst case written down in § 4? |
+| **Ids and shared values** | Does an id ever change? Do two concepts share one value, and does the change treat one as the other? A profile's id is its Auth user's id, and a photo's folder in `wish-images` is its owner's id (security rule 5), so a change that writes ids or storage paths itself must keep both. Is a placeholder (the nil UUID) ever stored as real? |
 | **Between `db push` and merge** | Does the code on `main` still work against the migrated database? What if the PR is closed after the push? |
 | **Guards in layers** | Which layers guard this: policy, grant, trigger, check constraint, test? Does the change weaken one, or rest on the app alone (rule 8)? Does a new definer function check its caller and answer only about the caller? |
 | **Proof** | For every guard the change adds or relies on: is there a test that fails when the guard is removed? Name the file and check number. A guard without such a test is a gap |
@@ -136,7 +138,7 @@ The same lenses over everything. It rebuilds the map from what is really there, 
 ## Rules
 
 - Never run a remote Supabase command; print it for the developer.
-- Never write a secret, real data or an exploit to `docs/data-safety.md`, an issue or a review: the repo is public. A gap that reaches another person's data goes to an issue with the `security` label first.
+- Never write a secret, real data or an exploit to `docs/data-safety.md`, an issue or a review: the repo is public. A gap that reaches another person's data, or lets an owner learn about a reservation, goes to an issue with the `security` label before it goes in the map, and once there are real users (the family's phones, from epic 6), to a private GitHub security advisory instead.
 - Never call something a guard without naming its proof, or "none".
 - Do not fix findings from this skill unless the caller says so: `/wish-review-pr` fixes 🔴 on the branch, `/wish-epic-close` triages the rest.
 - In diff mode, never read past the chains the diff reaches.

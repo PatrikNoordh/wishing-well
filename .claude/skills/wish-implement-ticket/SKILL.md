@@ -66,7 +66,7 @@ The slug is 2–5 lowercase words describing what changes. If the branch already
 
 ## Step 3 — Plan
 
-Read the existing code in the area before changing anything. Where things live:
+Read the existing code in the area before changing anything. Where things live (how to split code into files is in `CLAUDE.md` § Code structure):
 
 | What | Where |
 |---|---|
@@ -113,6 +113,7 @@ Follow `CLAUDE.md` exactly. The rules that matter most:
 ### No hardcoded values (`CLAUDE.md` § No hardcoded values)
 - UI text through `t()` with a key in both locale files, added in the same commit. Counts use i18next plurals
 - Colours, spacing, radii and type from `src/theme/`. Never hex or rgb in components
+- Styles through `StyleSheet.create` with values from `src/theme/` (`docs/decisions/0006-styling.md`). An inline `style={{}}` only for values computed at runtime, like an animated transform or a measured height
 - Magic numbers become named constants in `src/lib/constants.ts`
 - Errors from Edge Functions and the database are codes; the app translates them (`docs/error-codes.md`)
 
@@ -143,6 +144,8 @@ npm test
 npm run build
 ```
 
+`npm run build` (an `expo export` of the JS bundle) does not type-check: Metro strips the types without checking them, so `tsc` is required.
+
 `scripts/check-english.sh` runs on every branch, also before `package.json` exists: Swedish belongs in `src/locales/sv.json` only (`CLAUDE.md` § Language).
 
 If the branch touches `supabase/`, also run the RLS tests against a throwaway local database:
@@ -155,11 +158,13 @@ Every check must print `OK`. If Postgres is not available locally, say so in the
 
 If the branch touches `supabase/functions/`, also run the Deno checks the way CI does (`DENO_NO_PACKAGE_JSON=1`): `deno check supabase/functions/*/index.ts` and `deno test --allow-env supabase/functions`.
 
-If the branch adds a migration, it must follow the migration rules in `CLAUDE.md` § Workflow. Print the dry run for the developer to run in their own terminal and paste back. Never run a command against the linked project yourself:
+If the branch adds a migration, it must follow the migration rules in `CLAUDE.md` § Workflow. It must be backwards compatible with the code on `main`, because it reaches the project before the merge. Print the dry run for the developer to run in their own terminal and paste back. Never run a command against the linked project yourself, not even a read-only one:
 
 ```bash
 npx supabase db push --remote --dry-run
 ```
+
+It must list only the migrations this branch adds. If it lists anything else, stop and tell the developer. `db push` is run by the developer too, only after their yes. When unattended, write in the summary that the migration still has to be applied before the merge.
 
 If the branch adds a native module or changes `app.json` plugins, print the development build command for the developer (`eas build --profile development --platform android`) and say that testing waits for the new build.
 
