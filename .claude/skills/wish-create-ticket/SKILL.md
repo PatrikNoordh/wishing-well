@@ -101,6 +101,8 @@ gh label create "<label>" --repo "$REPO" --force
 
 ## Step 5 — Draft the issue body
 
+Write the issue in English and name the UI by its English text from `src/locales/en.json` (`CLAUDE.md` § Language): "People → **Invite**", not the Swedish label. A description given in Swedish is translated, labels included, with the terms in `docs/ui-spec.md` § UI terms (en → sv).
+
 ### feat / fix / chore template
 
 ```markdown

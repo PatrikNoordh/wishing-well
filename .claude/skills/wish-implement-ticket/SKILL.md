@@ -118,6 +118,7 @@ Follow `CLAUDE.md` exactly. The rules that matter most:
 
 ### UI and UX
 - Code, comments and identifiers in English
+- Comments, docs and the summary name the UI by its English text from `src/locales/en.json` ("**I'll buy it**", not the Swedish label), as in `CLAUDE.md` § Language
 - Reuse `src/components/ui/` and `States.tsx` before writing new components
 - Loading, empty and error states; sensible behaviour without network
 - 360 dp wide, dark mode, large system fonts, accessibility labels, 48 dp touch targets
@@ -192,7 +193,7 @@ If the ticket taught something worth telling, add an entry to `docs/journal.md` 
 
 ## Step 7 — Summary and issue update
 
-Print this summary:
+Print this summary. It is in English and names the UI by its English text (`CLAUDE.md` § Language), also in the manual test steps:
 
 ```markdown
 ## [WISH-<N>] Implementation complete

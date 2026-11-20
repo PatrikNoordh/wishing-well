@@ -100,7 +100,7 @@ Work in the scratchpad, never in the repo, for issue bodies.
 
 ## Step 7 — Write the report
 
-Create `docs/review-epic-<N>.md` (after the first one, follow its shape):
+Create `docs/review-epic-<N>.md` (after the first one, follow its shape). Like every doc, it names the UI by its English text (`CLAUDE.md` § Language):
 
 ```markdown
 # Review of Epic <N> — <Name>

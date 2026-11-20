@@ -90,6 +90,7 @@ Read each file completely before forming an opinion. For changed functions, also
 ### PR hygiene
 - Branch `wish/WISH-<N>-...`, commits `(MODEL_NAME) <type> [WISH-<N>] ...`, title `<type> [WISH-<N>] Title Case Summary`
 - Body has Summary, What Changed, Acceptance Criteria, Manual Test Steps, Tradeoffs and `Closes #<n>`
+- The PR body, the docs and the comments name the UI by its English text (`CLAUDE.md` § Language): a Swedish label where "**Who can see this?**" is meant is a 🟡 warning, fixed in the PR body before the merge. `scripts/check-english.sh` catches it in the repo, not in the PR body
 
 ### Data safety
 - Run `/wish-data-safety` in diff mode on the PR's branch. It answers in one line when no data path is touched; otherwise its risk table goes into the review as it is

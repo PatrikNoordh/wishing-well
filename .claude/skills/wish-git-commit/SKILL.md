@@ -63,6 +63,7 @@ All five must pass. `npm run build` (an `expo export` of the JS bundle) does not
 
 - The ticket id repeats on every commit in the branch
 - Imperative mood, subject under 72 characters, no body
+- In English, naming the UI by its English text (`CLAUDE.md` § Language): "show Only me on the glass label", not the Swedish label
 - Never add a `Co-Authored-By` footer or other attribution. The `(MODEL_NAME)` prefix already says who wrote it
 - Never `--no-verify`
 - Never commit `.env`, `.env*.local`, secrets, keystores or the Supabase service role key

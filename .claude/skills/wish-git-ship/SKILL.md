@@ -96,7 +96,7 @@ On conflicts, **stop and report**. Never resolve conflicts automatically. After 
 
 ## Step 6 — Open the PR
 
-Use `.github/pull_request_template.md`, filled in: Summary, What Changed (database, Edge Functions, data layer, UI, tests, native), every AC, manual test steps with who they are run as, tradeoffs, validation.
+Use `.github/pull_request_template.md`, filled in: Summary, What Changed (database, Edge Functions, data layer, UI, tests, native), every AC, manual test steps with who they are run as, tradeoffs, validation. Write it in English and name the UI by its English text, as in `CLAUDE.md` § Language: "All → **Share** → **Anyone with the link**", never the Swedish labels.
 
 ```bash
 gh pr create --repo "$REPO" --base main --title "<type> [WISH-<N>] <Title Case Summary>" --body-file "<filled template>"

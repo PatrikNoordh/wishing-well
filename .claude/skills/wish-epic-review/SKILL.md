@@ -34,7 +34,7 @@ Identify every `[WISH-<N>]` ticket in the epic, which are closed, and their acce
 gh pr list --repo "$REPO" --state merged --json number,title,headRefName,mergedAt,body --limit 50
 ```
 
-For each ticket: a merged PR from a `wish/WISH-<N>-...` branch, with What Changed, Acceptance Criteria, Manual Test Steps and `Closes #<n>`. A ticket closed without a PR is fine only if the work happened outside the code and the issue says so.
+For each ticket: a merged PR from a `wish/WISH-<N>-...` branch, with What Changed, Acceptance Criteria, Manual Test Steps and `Closes #<n>`, naming the UI by its English text (`CLAUDE.md` § Language). A ticket closed without a PR is fine only if the work happened outside the code and the issue says so.
 
 ---
 
