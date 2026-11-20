@@ -8,7 +8,7 @@
 
 After the sharing model, two wishes came up:
 
-- **"Alla med länken"**, like Google Docs: send a link to someone who is not a contact yet (a colleague, a grandparent in a group chat) without an invite first.
+- **"Anyone with the link"**, like Google Docs: send a link to someone who is not a contact yet (a colleague, a grandparent in a group chat) without an invite first.
 - **Searchable profiles and public lists** later, maybe a GoWish-like app one day. Not in v1, but the developer does not want to redo the schema and migrate real data when it comes.
 
 Once lists can reach people outside your contacts, you also need a way to shut someone out for good.
@@ -16,7 +16,7 @@ Once lists can reach people outside your contacts, you also need a way to shut s
 ## Decision
 
 - **A fourth way to share a list: `share = 'link'`.** The database makes a random 32-character code (`list_links`, owner-only). Whoever opens `.../l/<code>` signs in, `open_list_link()` records them in `list_link_access`, and they see that list, its owner's name, and the wishes in it that follow their lists. Overrides still win: a wish for chosen people or "only me" never shows through a link.
-- **The owner stays in control of a link.** "Ny länk" (`regenerate_list_link()`) or leaving `link` shuts out everyone who came through the old one. The owner can see who opened it.
+- **The owner stays in control of a link.** "New link" (`regenerate_list_link()`) or leaving `link` shuts out everyone who came through the old one. The owner can see who opened it.
 - **A link needs an account.** That is what makes "shut them out" and "who has seen it" possible, and what lets a link viewer reserve. The owner still never sees reservations, also not those made through a link.
 - **Blocking.** `blocks` holds who blocked whom. A block hides the two from each other in every way (lists, wishes, profile, search, invites, links), ends the contact, link access and reservations between them, and is visible to the blocker only. Lifting a block brings nothing back.
 - **Prepared, no screens in v1:**

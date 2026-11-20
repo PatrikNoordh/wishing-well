@@ -81,7 +81,7 @@ Read each file completely before forming an opinion. For changed functions, also
 
 ### Tests and CI
 - New pure logic has a unit test; Edge Function handlers have Deno tests without network
-- `gh pr checks` shows the `app`, `functions` and `rls` jobs green. If not, it is a blocker
+- `gh pr checks` shows the `language`, `app`, `functions` and `rls` jobs green. If not, it is a blocker
 - The manual test steps in the PR say who each step is run as, and were run on a phone
 
 ### Quality bar

@@ -9,18 +9,18 @@
 -- People:
 --   A  Anna   the owner of the wishes
 --   B  Bo     A's contact (gets one wish only he may see)
---   C  Cleo   A's contact (chosen for the category "Inredning")
+--   C  Cleo   A's contact (chosen for the category "Home decor")
 --   E  Eva    A's contact
 --   D  Dan    a stranger to A (a contact of E)
 --
 -- A's wishes and lists (built in section "wishes and lists"):
---   main list "Allt"   every wish; private at first, later shared with all contacts
---   "Jul"              shared with all contacts: Lampa, Bok, Intim, Hemlis
---   "Inredning"        shared with C only:       Lampa
---   "Present till Bo"  private:                  Present
---   Soffa              in no category
---   Intim              audience 'people': only B
---   Hemlis             audience 'only_me'
+--   main list "All"    every wish; private at first, later shared with all contacts
+--   "Christmas"        shared with all contacts: Lamp, Book, Intimate, Secret
+--   "Home decor"       shared with C only:       Lamp
+--   "Present for Bo"   private:                  Present
+--   Sofa               in no category
+--   Intimate           audience 'people': only B
+--   Secret             audience 'only_me'
 -- Ids and invite codes are kept in test.* settings, so a check signed in as one
 -- person can name another person's rows.
 -- =============================================================================
@@ -196,40 +196,40 @@ end $$;
 -- ---------------------------------------------------------------- wishes and lists
 set local role authenticated;
 select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-00000000000a","role":"authenticated"}', true);
-insert into public.lists (title) values ('Jul'), ('Inredning'), ('Present till Bo');
+insert into public.lists (title) values ('Christmas'), ('Home decor'), ('Present for Bo');
 insert into public.wishes (title, image_path) values
-  ('Lampa', '00000000-0000-0000-0000-00000000000a/lampa.jpg');
-insert into public.wishes (title) values ('Bok'), ('Soffa'), ('Present');
+  ('Lamp', '00000000-0000-0000-0000-00000000000a/lamp.jpg');
+insert into public.wishes (title) values ('Book'), ('Sofa'), ('Present');
 insert into public.wishes (title, audience, image_path) values
-  ('Intim', 'people', '00000000-0000-0000-0000-00000000000a/intim.jpg'),
-  ('Hemlis', 'only_me', null);
+  ('Intimate', 'people', '00000000-0000-0000-0000-00000000000a/intimate.jpg'),
+  ('Secret', 'only_me', null);
 insert into storage.objects (bucket_id, name) values
-  ('wish-images', '00000000-0000-0000-0000-00000000000a/lampa.jpg'),
-  ('wish-images', '00000000-0000-0000-0000-00000000000a/intim.jpg'),
+  ('wish-images', '00000000-0000-0000-0000-00000000000a/lamp.jpg'),
+  ('wish-images', '00000000-0000-0000-0000-00000000000a/intimate.jpg'),
   ('wish-images', '00000000-0000-0000-0000-00000000000a/unused.jpg');
 reset role;
-select set_config('test.l_main',    (select id::text from public.lists where owner_id = current_setting('test.a')::uuid and is_main), true),
-       set_config('test.l_jul',     (select id::text from public.lists where title = 'Jul'), true),
-       set_config('test.l_inred',   (select id::text from public.lists where title = 'Inredning'), true),
-       set_config('test.l_present', (select id::text from public.lists where title = 'Present till Bo'), true),
-       set_config('test.w_lamp',    (select id::text from public.wishes where title = 'Lampa'), true),
-       set_config('test.w_book',    (select id::text from public.wishes where title = 'Bok'), true),
-       set_config('test.w_sofa',    (select id::text from public.wishes where title = 'Soffa'), true),
-       set_config('test.w_present', (select id::text from public.wishes where title = 'Present'), true),
-       set_config('test.w_intim',   (select id::text from public.wishes where title = 'Intim'), true),
-       set_config('test.w_secret',  (select id::text from public.wishes where title = 'Hemlis'), true);
+select set_config('test.l_main',      (select id::text from public.lists where owner_id = current_setting('test.a')::uuid and is_main), true),
+       set_config('test.l_christmas', (select id::text from public.lists where title = 'Christmas'), true),
+       set_config('test.l_home',      (select id::text from public.lists where title = 'Home decor'), true),
+       set_config('test.l_present',   (select id::text from public.lists where title = 'Present for Bo'), true),
+       set_config('test.w_lamp',      (select id::text from public.wishes where title = 'Lamp'), true),
+       set_config('test.w_book',      (select id::text from public.wishes where title = 'Book'), true),
+       set_config('test.w_sofa',      (select id::text from public.wishes where title = 'Sofa'), true),
+       set_config('test.w_present',   (select id::text from public.wishes where title = 'Present'), true),
+       set_config('test.w_intimate',  (select id::text from public.wishes where title = 'Intimate'), true),
+       set_config('test.w_secret',    (select id::text from public.wishes where title = 'Secret'), true);
 
 set local role authenticated;
 select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-00000000000a","role":"authenticated"}', true);
 insert into public.list_items (list_id, wish_id) values
-  (current_setting('test.l_jul')::uuid,     current_setting('test.w_lamp')::uuid),
-  (current_setting('test.l_jul')::uuid,     current_setting('test.w_book')::uuid),
-  (current_setting('test.l_jul')::uuid,     current_setting('test.w_intim')::uuid),
-  (current_setting('test.l_jul')::uuid,     current_setting('test.w_secret')::uuid),
-  (current_setting('test.l_inred')::uuid,   current_setting('test.w_lamp')::uuid),
-  (current_setting('test.l_present')::uuid, current_setting('test.w_present')::uuid);
+  (current_setting('test.l_christmas')::uuid, current_setting('test.w_lamp')::uuid),
+  (current_setting('test.l_christmas')::uuid, current_setting('test.w_book')::uuid),
+  (current_setting('test.l_christmas')::uuid, current_setting('test.w_intimate')::uuid),
+  (current_setting('test.l_christmas')::uuid, current_setting('test.w_secret')::uuid),
+  (current_setting('test.l_home')::uuid,      current_setting('test.w_lamp')::uuid),
+  (current_setting('test.l_present')::uuid,   current_setting('test.w_present')::uuid);
 insert into public.wish_audience (wish_id, person_id) values
-  (current_setting('test.w_intim')::uuid, current_setting('test.b')::uuid);
+  (current_setting('test.w_intimate')::uuid, current_setting('test.b')::uuid);
 
 -- 10. Private by default: nothing is shared yet.
 do $$ begin
@@ -243,32 +243,32 @@ do $$ begin
 end $$;
 select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-00000000000b","role":"authenticated"}', true);
 do $$ begin
-  assert (select array_agg(title) from public.wishes where owner_id = current_setting('test.a')::uuid) = array['Intim'],
+  assert (select array_agg(title) from public.wishes where owner_id = current_setting('test.a')::uuid) = array['Intimate'],
     'B sees more than the one wish chosen for him';
   assert not exists (select 1 from public.lists where owner_id = current_setting('test.a')::uuid), 'B sees an unshared list';
   raise notice 'OK 10: everything is private until it is shared; a wish chosen for one person is seen by that person alone';
 end $$;
 
--- A shares "Jul" with all contacts and "Inredning" with C.
+-- A shares "Christmas" with all contacts and "Home decor" with C.
 select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-00000000000a","role":"authenticated"}', true);
-update public.lists set share = 'contacts' where id = current_setting('test.l_jul')::uuid;
-update public.lists set share = 'people' where id = current_setting('test.l_inred')::uuid;
+update public.lists set share = 'contacts' where id = current_setting('test.l_christmas')::uuid;
+update public.lists set share = 'people' where id = current_setting('test.l_home')::uuid;
 insert into public.list_shares (list_id, person_id) values
-  (current_setting('test.l_inred')::uuid, current_setting('test.c')::uuid);
+  (current_setting('test.l_home')::uuid,      current_setting('test.c')::uuid);
 
 select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-00000000000b","role":"authenticated"}', true);
 do $$ begin
-  assert (select count(*) from public.wishes where owner_id = current_setting('test.a')::uuid) = 3, 'B: Lampa, Bok, Intim';
-  assert exists (select 1 from public.wishes where title = 'Intim'), 'B misses the wish chosen for him';
+  assert (select count(*) from public.wishes where owner_id = current_setting('test.a')::uuid) = 3, 'B: Lamp, Book, Intimate';
+  assert exists (select 1 from public.wishes where title = 'Intimate'), 'B misses the wish chosen for him';
   assert (select array_agg(title order by title) from public.lists where owner_id = current_setting('test.a')::uuid)
-         = array['Jul'], 'B sees other list names than Jul';
+         = array['Christmas'], 'B sees other list names than Christmas';
 end $$;
 select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-00000000000c","role":"authenticated"}', true);
 do $$ begin
   assert (select array_agg(title order by title) from public.wishes where owner_id = current_setting('test.a')::uuid)
-         = array['Bok', 'Lampa'], 'C sees other wishes than Bok and Lampa';
+         = array['Book', 'Lamp'], 'C sees other wishes than Book and Lamp';
   assert (select array_agg(title order by title) from public.lists where owner_id = current_setting('test.a')::uuid)
-         = array['Inredning', 'Jul'], 'C sees other lists than Inredning and Jul';
+         = array['Christmas', 'Home decor'], 'C sees other lists than Christmas and Home decor';
 end $$;
 select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-00000000000d","role":"authenticated"}', true);
 do $$ begin
@@ -277,41 +277,41 @@ do $$ begin
   raise notice 'OK 11: a shared category shows its wishes and its name to those it is shared with, and nothing else';
 end $$;
 
--- A shares the main list "Allt" with all contacts.
+-- A shares the main list "All" with all contacts.
 select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-00000000000a","role":"authenticated"}', true);
 update public.lists set share = 'contacts' where id = current_setting('test.l_main')::uuid;
 
 select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-00000000000c","role":"authenticated"}', true);
 do $$ begin
   assert (select array_agg(title order by title) from public.wishes where owner_id = current_setting('test.a')::uuid)
-         = array['Bok', 'Lampa', 'Present', 'Soffa'], 'C with Allt shared';
-  assert not exists (select 1 from public.lists where title = 'Present till Bo'), 'C sees the name of a private category';
-  raise notice 'OK 12: sharing "Allt" shows every wish that follows its lists, but no private category name';
+         = array['Book', 'Lamp', 'Present', 'Sofa'], 'C with All shared';
+  assert not exists (select 1 from public.lists where title = 'Present for Bo'), 'C sees the name of a private category';
+  raise notice 'OK 12: sharing "All" shows every wish that follows its lists, but no private category name';
 end $$;
 select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-00000000000b","role":"authenticated"}', true);
 do $$ begin
   assert (select array_agg(title order by title) from public.wishes where owner_id = current_setting('test.a')::uuid)
-         = array['Bok', 'Intim', 'Lampa', 'Present', 'Soffa'], 'B with Allt shared';
-  assert not exists (select 1 from public.lists where title = 'Present till Bo'), 'B sees the category about his present';
+         = array['Book', 'Intimate', 'Lamp', 'Present', 'Sofa'], 'B with All shared';
+  assert not exists (select 1 from public.lists where title = 'Present for Bo'), 'B sees the category about his present';
   assert not exists (select 1 from public.list_items where list_id = current_setting('test.l_present')::uuid),
     'B sees that his present is in a private category';
 end $$;
 select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-00000000000e","role":"authenticated"}', true);
 do $$ begin
-  assert not exists (select 1 from public.wishes where title in ('Intim', 'Hemlis')), 'E sees Intim or Hemlis';
+  assert not exists (select 1 from public.wishes where title in ('Intimate', 'Secret')), 'E sees Intimate or Secret';
   raise notice 'OK 13: a wish for chosen people and a wish for only me stay hidden from everyone else, even in shared lists';
 end $$;
 
 -- What is in a shared list is visible only wish by wish.
 select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-00000000000c","role":"authenticated"}', true);
 do $$ begin
-  assert (select count(*) from public.list_items where list_id = current_setting('test.l_jul')::uuid) = 2,
-    'C sees Jul items she cannot see the wish of';
+  assert (select count(*) from public.list_items where list_id = current_setting('test.l_christmas')::uuid) = 2,
+    'C sees Christmas items she cannot see the wish of';
 end $$;
 select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-00000000000b","role":"authenticated"}', true);
 do $$ begin
-  assert (select count(*) from public.list_items where list_id = current_setting('test.l_jul')::uuid) = 3,
-    'B sees other Jul items than Lampa, Bok and Intim';
+  assert (select count(*) from public.list_items where list_id = current_setting('test.l_christmas')::uuid) = 3,
+    'B sees other Christmas items than Lamp, Book and Intimate';
   raise notice 'OK 14: a list''s items are visible only for wishes the person may see';
 end $$;
 
@@ -334,14 +334,14 @@ select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-0000000
 do $$ declare blocked boolean := false; begin
   begin
     insert into public.list_shares (list_id, person_id)
-    values (current_setting('test.l_inred')::uuid, current_setting('test.d')::uuid);
+    values (current_setting('test.l_home')::uuid, current_setting('test.d')::uuid);
   exception when insufficient_privilege then blocked := true;
   end;
   assert blocked, 'A shared a list with a stranger';
   blocked := false;
   begin
     insert into public.wish_audience (wish_id, person_id)
-    values (current_setting('test.w_intim')::uuid, current_setting('test.d')::uuid);
+    values (current_setting('test.w_intimate')::uuid, current_setting('test.d')::uuid);
   exception when insufficient_privilege then blocked := true;
   end;
   assert blocked, 'A chose a stranger for a wish';
@@ -350,25 +350,25 @@ end $$;
 
 -- ---------------------------------------------------------------- writes
 select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-00000000000b","role":"authenticated"}', true);
-insert into public.lists (title) values ('Bos lista');
-insert into public.wishes (title) values ('Bos önskan');
+insert into public.lists (title) values ('Bo''s list');
+insert into public.wishes (title) values ('Bo''s wish');
 reset role;
-select set_config('test.l_bo', (select id::text from public.lists where title = 'Bos lista'), true),
-       set_config('test.w_bo', (select id::text from public.wishes where title = 'Bos önskan'), true);
+select set_config('test.l_bo', (select id::text from public.lists where title = 'Bo''s list'), true),
+       set_config('test.w_bo', (select id::text from public.wishes where title = 'Bo''s wish'), true);
 set local role authenticated;
 select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-00000000000b","role":"authenticated"}', true);
 
 do $$ declare blocked boolean; n int; begin
-  update public.lists set title = 'hacked' where id = current_setting('test.l_jul')::uuid;
+  update public.lists set title = 'hacked' where id = current_setting('test.l_christmas')::uuid;
   update public.wishes set title = 'hacked' where id = current_setting('test.w_lamp')::uuid;
   delete from public.wishes where id = current_setting('test.w_book')::uuid;
-  delete from public.lists where id = current_setting('test.l_jul')::uuid;
-  delete from public.list_items where list_id = current_setting('test.l_jul')::uuid;
+  delete from public.lists where id = current_setting('test.l_christmas')::uuid;
+  delete from public.list_items where list_id = current_setting('test.l_christmas')::uuid;
   get diagnostics n = row_count;
   assert n = 0, 'B removed items from A''s list';
   blocked := false;
   begin
-    insert into public.list_items (list_id, wish_id) values (current_setting('test.l_jul')::uuid, current_setting('test.w_bo')::uuid);
+    insert into public.list_items (list_id, wish_id) values (current_setting('test.l_christmas')::uuid, current_setting('test.w_bo')::uuid);
   exception
     when insufficient_privilege then blocked := true;
     when raise_exception then blocked := sqlerrm = 'owner_mismatch';
@@ -411,7 +411,7 @@ do $$ declare msg text; blocked boolean := false; begin
   end;
   assert msg = 'main_list_protected', 'main list deleted: ' || coalesce(msg, 'no error');
   begin
-    update public.lists set title = 'Allt mitt' where id = current_setting('test.l_main')::uuid;
+    update public.lists set title = 'All mine' where id = current_setting('test.l_main')::uuid;
   exception when check_violation then blocked := true;
   end;
   assert blocked, 'main list got a title';
@@ -431,18 +431,18 @@ do $$ declare msg text; blocked boolean := false; begin
 end $$;
 
 -- ---------------------------------------------------------------- reservations
--- C reserves Lampa. B reserves Bok and Intim.
+-- C reserves Lamp. B reserves Book and Intimate.
 select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-00000000000c","role":"authenticated"}', true);
 insert into public.reservations (wish_id) values (current_setting('test.w_lamp')::uuid);
 select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-00000000000b","role":"authenticated"}', true);
 insert into public.reservations (wish_id) values (current_setting('test.w_book')::uuid),
-                                                 (current_setting('test.w_intim')::uuid);
+                                                 (current_setting('test.w_intimate')::uuid);
 do $$ begin
   assert (select count(*) from public.reservations) = 3, 'B sees all three reservations';
 end $$;
 select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-00000000000c","role":"authenticated"}', true);
 do $$ begin
-  assert (select count(*) from public.reservations) = 2, 'C sees Lampa and Bok, not the hidden Intim';
+  assert (select count(*) from public.reservations) = 2, 'C sees Lamp and Book, not the hidden Intimate';
   raise notice 'OK 18: others see a reservation exactly when they can see the wish';
 end $$;
 
@@ -482,7 +482,7 @@ do $$ declare blocked boolean := false; dup boolean := false; n int; begin
   assert blocked, 'C reserved a wish only the owner may see';
   blocked := false;
   begin
-    insert into public.reservations (wish_id) values (current_setting('test.w_intim')::uuid);
+    insert into public.reservations (wish_id) values (current_setting('test.w_intimate')::uuid);
   exception when insufficient_privilege then blocked := true;
   end;
   assert blocked, 'C reserved a wish hidden from her (and could tell it was taken)';
@@ -520,21 +520,21 @@ end $$;
 -- ---------------------------------------------------------------- photos
 select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-00000000000b","role":"authenticated"}', true);
 do $$ declare blocked boolean := false; n int; begin
-  assert exists (select 1 from storage.objects where name = '00000000-0000-0000-0000-00000000000a/intim.jpg'), 'B cannot open Intim''s photo';
+  assert exists (select 1 from storage.objects where name = '00000000-0000-0000-0000-00000000000a/intimate.jpg'), 'B cannot open Intimate''s photo';
   assert not exists (select 1 from storage.objects where name = '00000000-0000-0000-0000-00000000000a/unused.jpg'), 'B opens an unused photo';
   begin
     insert into storage.objects (bucket_id, name) values ('wish-images', '00000000-0000-0000-0000-00000000000a/planted.jpg');
   exception when insufficient_privilege then blocked := true;
   end;
   assert blocked, 'B uploaded into A''s folder';
-  delete from storage.objects where name = '00000000-0000-0000-0000-00000000000a/lampa.jpg';
+  delete from storage.objects where name = '00000000-0000-0000-0000-00000000000a/lamp.jpg';
   get diagnostics n = row_count;
   assert n = 0, 'B deleted A''s photo';
 end $$;
 select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-00000000000c","role":"authenticated"}', true);
 do $$ begin
-  assert exists (select 1 from storage.objects where name = '00000000-0000-0000-0000-00000000000a/lampa.jpg'), 'C cannot open Lampa''s photo';
-  assert not exists (select 1 from storage.objects where name = '00000000-0000-0000-0000-00000000000a/intim.jpg'), 'C opens Intim''s photo';
+  assert exists (select 1 from storage.objects where name = '00000000-0000-0000-0000-00000000000a/lamp.jpg'), 'C cannot open Lamp''s photo';
+  assert not exists (select 1 from storage.objects where name = '00000000-0000-0000-0000-00000000000a/intimate.jpg'), 'C opens Intimate''s photo';
 end $$;
 select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-00000000000d","role":"authenticated"}', true);
 do $$ begin
@@ -543,7 +543,7 @@ do $$ begin
 end $$;
 
 -- ---------------------------------------------------------------- ending a connection
--- C ends being A's contact: Allt and Jul are still shared with "all contacts", but C is not one any more.
+-- C ends being A's contact: All and Christmas are still shared with "all contacts", but C is not one any more.
 select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-00000000000c","role":"authenticated"}', true);
 delete from public.connections where current_setting('test.a')::uuid in (user_a, user_b);
 do $$ begin
@@ -552,15 +552,15 @@ do $$ begin
   assert not exists (select 1 from storage.objects where name like '00000000-0000-0000-0000-00000000000a/%'), 'C still sees A''s photos';
   reset role;
   assert not exists (select 1 from public.reservations where wish_id = current_setting('test.w_lamp')::uuid), 'C''s reservation kept';
-  assert not exists (select 1 from public.list_shares where person_id = current_setting('test.c')::uuid), 'C still chosen for Inredning';
+  assert not exists (select 1 from public.list_shares where person_id = current_setting('test.c')::uuid), 'C still chosen for Home decor';
   assert (select count(*) from public.reservations where reserved_by = current_setting('test.b')::uuid) = 2, 'B''s reservations lost';
   raise notice 'OK 24: ending a connection hides everything and removes reservations and choices between the two, nothing else';
 end $$;
 
 -- Even if a choice were left behind (planted here past RLS), a former contact sees nothing:
 -- every way to see a wish or a list also needs the connection.
-insert into public.wish_audience (wish_id, person_id) values (current_setting('test.w_intim')::uuid, current_setting('test.c')::uuid);
-insert into public.list_shares (list_id, person_id) values (current_setting('test.l_inred')::uuid, current_setting('test.c')::uuid);
+insert into public.wish_audience (wish_id, person_id) values (current_setting('test.w_intimate')::uuid, current_setting('test.c')::uuid);
+insert into public.list_shares (list_id, person_id) values (current_setting('test.l_home')::uuid, current_setting('test.c')::uuid);
 update public.wishes set audience = 'people' where id = current_setting('test.w_lamp')::uuid;
 insert into public.wish_audience (wish_id, person_id) values (current_setting('test.w_lamp')::uuid, current_setting('test.c')::uuid);
 set local role authenticated;
@@ -573,19 +573,19 @@ end $$;
 reset role;
 
 -- ---------------------------------------------------------------- shared by link
--- A makes a category "Till alla" with Soffa, Hemlis and Intim, and shares it by link.
+-- A makes a category "For everyone" with Sofa, Secret and Intimate, and shares it by link.
 -- D is a stranger to A.
 set local role authenticated;
 select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-00000000000a","role":"authenticated"}', true);
-insert into public.lists (title) values ('Till alla');
+insert into public.lists (title) values ('For everyone');
 reset role;
-select set_config('test.l_link', (select id::text from public.lists where title = 'Till alla'), true);
+select set_config('test.l_link', (select id::text from public.lists where title = 'For everyone'), true);
 set local role authenticated;
 select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-00000000000a","role":"authenticated"}', true);
 insert into public.list_items (list_id, wish_id) values
   (current_setting('test.l_link')::uuid, current_setting('test.w_sofa')::uuid),
   (current_setting('test.l_link')::uuid, current_setting('test.w_secret')::uuid),
-  (current_setting('test.l_link')::uuid, current_setting('test.w_intim')::uuid);
+  (current_setting('test.l_link')::uuid, current_setting('test.w_intimate')::uuid);
 update public.lists set share = 'link' where id = current_setting('test.l_link')::uuid;
 do $$ begin
   assert (select count(*) from public.list_links where list_id = current_setting('test.l_link')::uuid) = 1, 'no code made';
@@ -612,10 +612,10 @@ end $$;
 
 select public.open_list_link(current_setting('test.code_link'));
 do $$ begin
-  assert (select array_agg(title) from public.lists where owner_id = current_setting('test.a')::uuid) = array['Till alla'],
+  assert (select array_agg(title) from public.lists where owner_id = current_setting('test.a')::uuid) = array['For everyone'],
     'link opener sees other lists';
-  assert (select array_agg(title) from public.wishes where owner_id = current_setting('test.a')::uuid) = array['Soffa'],
-    'link opener sees other wishes than Soffa';
+  assert (select array_agg(title) from public.wishes where owner_id = current_setting('test.a')::uuid) = array['Sofa'],
+    'link opener sees other wishes than Sofa';
   assert (select display_name from public.profiles where id = current_setting('test.a')::uuid) = 'Anna', 'link opener cannot see the owner''s name';
   assert (select count(*) from public.list_items) = 1, 'link opener sees other list items';
   raise notice 'OK 27: whoever opens the link sees that list, its owner''s name, and only the wishes that follow their lists';
@@ -655,7 +655,7 @@ do $$ declare msg text; begin
   end;
   assert msg = 'link_not_found', 'old code: ' || coalesce(msg, 'no error');
   perform public.open_list_link(current_setting('test.code_link2'));
-  assert exists (select 1 from public.lists where title = 'Till alla'), 'new code does not work';
+  assert exists (select 1 from public.lists where title = 'For everyone'), 'new code does not work';
   raise notice 'OK 29: a new link shuts out everyone who came through the old one';
 end $$;
 
@@ -679,15 +679,15 @@ end $$;
 
 -- ---------------------------------------------------------------- prepared: public lists and search
 select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-00000000000a","role":"authenticated"}', true);
-insert into public.lists (title, share) values ('Publik', 'public');
+insert into public.lists (title, share) values ('Public', 'public');
 insert into public.list_items (list_id, wish_id)
-  select id, current_setting('test.w_book')::uuid from public.lists where title = 'Publik';
+  select id, current_setting('test.w_book')::uuid from public.lists where title = 'Public';
 select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-00000000000c","role":"authenticated"}', true);
 do $$ begin
-  assert (select array_agg(title) from public.lists where owner_id = current_setting('test.a')::uuid) = array['Publik'],
+  assert (select array_agg(title) from public.lists where owner_id = current_setting('test.a')::uuid) = array['Public'],
     'a former contact sees other lists than the public one';
-  assert (select array_agg(title) from public.wishes where owner_id = current_setting('test.a')::uuid) = array['Bok'],
-    'a former contact sees other wishes than Bok';
+  assert (select array_agg(title) from public.wishes where owner_id = current_setting('test.a')::uuid) = array['Book'],
+    'a former contact sees other wishes than Book';
   raise notice 'OK 31: (prepared) a public list is seen by anyone signed in, and only its wishes';
 end $$;
 
@@ -792,7 +792,7 @@ do $$ begin
   assert not exists (select 1 from public.connections where current_setting('test.a')::uuid in (user_a, user_b)), 'connections kept';
   assert not exists (select 1 from public.invites where inviter_id = current_setting('test.a')::uuid), 'invites kept';
   assert not exists (select 1 from public.reservations where wish_id = current_setting('test.w_book')::uuid), 'reservation kept';
-  assert exists (select 1 from public.wishes where title = 'Bos önskan'), 'B''s wish removed';
+  assert exists (select 1 from public.wishes where title = 'Bo''s wish'), 'B''s wish removed';
   assert exists (select 1 from public.lists where owner_id = current_setting('test.b')::uuid and is_main), 'B''s main list removed';
   raise notice 'OK 34: deleting an account removes all of the person''s data, the main list included, and nobody else''s';
 end $$;

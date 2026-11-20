@@ -85,8 +85,8 @@ grep -rnE "#[0-9a-fA-F]{3,8}\b|rgba?\(" src/ --include="*.tsx" --include="*.ts" 
 grep -rnE "(padding|margin|gap|width|height|borderRadius|fontSize)[A-Za-z]*: *[0-9]+" src/ --include="*.tsx" --include="*.ts" | grep -v "src/theme/"
 
 # Hardcoded UI text: Swedish characters or JSX text outside the locale files
-grep -rnE "[åäöÅÄÖ]" src/ --include="*.tsx" --include="*.ts" | grep -v "src/locales/\|test\|mock"
-grep -rnE "<Text[^>]*>[[:space:]]*[A-Za-zÅÄÖåäö][^<>{}]{2,}<" src/ --include="*.tsx"
+bash scripts/check-english.sh
+grep -rnE "<Text[^>]*>[[:space:]]*[[:alpha:]][^<>{}]{2,}<" src/ --include="*.tsx"
 
 # Query keys without the user id
 grep -rn "queryKey:" src/ --include="*.ts" --include="*.tsx"
@@ -110,7 +110,7 @@ bash supabase/tests/run_local.sh
 gh run list --repo "$REPO" --branch main --limit 5
 ```
 
-The last CI run on `main` must be green in all three jobs. Any failure is a blocker.
+The last CI run on `main` must be green in all four jobs (`language`, `app`, `functions`, `rls`). Any failure is a blocker.
 
 ---
 

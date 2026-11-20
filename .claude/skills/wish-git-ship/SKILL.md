@@ -41,13 +41,14 @@ git rev-parse --abbrev-ref HEAD
 ## Step 2 — Validation
 
 ```bash
+bash scripts/check-english.sh
 npm run lint
 npx tsc --noEmit
 npm test
 npm run build
 ```
 
-All four must pass. Then:
+All five must pass (`scripts/check-english.sh`: no Swedish outside `src/locales/sv.json`, `CLAUDE.md` § Language). Then:
 
 - If the branch touches `supabase/`: `bash supabase/tests/run_local.sh`
 - If the branch touches `supabase/functions/`: the Deno checks as CI runs them (`DENO_NO_PACKAGE_JSON=1`):
@@ -124,7 +125,7 @@ gh pr create --repo "$REPO" --base main --title "<type> [WISH-<N>] <Title Case S
 ## Completion checks
 
 - [ ] Branch is not `main` and follows `wish/WISH-<N>-...` (or `wish/epic-<N>-review`)
-- [ ] lint, tsc, test and build pass. RLS and Deno tests passed or noted for CI
+- [ ] check-english, lint, tsc, test and build pass. RLS and Deno tests passed or noted for CI
 - [ ] A new migration is applied with the developer's yes, the types are compared, and the SQL Editor RLS run is in the PR when needed
 - [ ] Rebased on `origin/main` without conflicts
 - [ ] Files staged by name, commits follow the format, no `--no-verify`

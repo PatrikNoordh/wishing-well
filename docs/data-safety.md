@@ -21,7 +21,7 @@ How Wishing Well keeps data from being lost, left half done, or seen or changed 
 | `connections` | the pair `(user_a, user_b)`, `user_a < user_b` | `profiles(id)` cascade, both sides | through the trigger `connections_cleanup`: each side's reservations on the other's wishes, and each side's rows in the other's `wish_audience` and `list_shares` (checks 24, 25) |
 | `blocks` | `blocker_id`; the pair `(blocker_id, blocked_id)` is the key, never yourself | `profiles(id)` cascade, both sides | nothing. Creating one runs `blocks_cleanup` (check 33). Lifting one brings nothing back |
 | `invites` | `inviter_id` | `profiles(id)` cascade · `accepted_by` → `profiles(id)` set null | nothing |
-| `lists` | `owner_id`; one main list per owner (`is_main`, partial unique index) | `profiles(id)` cascade | its `list_shares` and `list_items` (cascade). **Not its wishes**: deleting a category leaves them in "Allt". The main list cannot be deleted while the profile exists (`main_list_protected`, check 17) |
+| `lists` | `owner_id`; one main list per owner (`is_main`, partial unique index) | `profiles(id)` cascade | its `list_shares` and `list_items` (cascade). **Not its wishes**: deleting a category leaves them in "All". The main list cannot be deleted while the profile exists (`main_list_protected`, check 17) |
 | `list_links` | the list's owner; one code per list | `lists(id)` cascade | nothing. Made by `lists_link_lifecycle` when `share` becomes `link`, deleted when it stops, given a new code by `regenerate_list_link()` (checks 26, 29, 30) |
 | `list_link_access` | the person who opened the link, `(list_id, user_id)` | `lists(id)` cascade · `profiles(id)` cascade | nothing. Cleared on a new code, when the list stops being shared by link, and by a block (checks 29, 30, 33) |
 | `list_shares` | the list's owner | `lists(id)` cascade · `profiles(id)` cascade | nothing |
@@ -47,7 +47,7 @@ How Wishing Well keeps data from being lost, left half done, or seen or changed 
 |---|---|---|
 | A reservation | client delete, only by the one who made it | one row (check 21) |
 | A wish | client delete by the owner | the row, its category memberships, chosen people and reservation in one statement. The photo is deleted by the app first (WISH-14 AC5); if that fails the wish stays, so no row ever points at a missing photo |
-| A category | client delete by the owner | the list, its shares and its memberships in one statement. Its wishes stay in "Allt" |
+| A category | client delete by the owner | the list, its shares and its memberships in one statement. Its wishes stay in "All" |
 | A connection | client delete by either side | the connection, then the cleanup trigger in the same transaction (check 24) |
 | A block (created) | client insert by the blocker | the block, then `blocks_cleanup` in the same transaction: the connection (and through it `connections_cleanup`), link access both ways, reservations both ways (check 33) |
 | A link | the owner sets `share` away from `link`, or asks for a new link | the code and every access row in the same statement (checks 29, 30) |
@@ -108,7 +108,7 @@ Each runs past RLS to answer one question about the caller, or to do one control
 |---|---|---|
 | A new wish or list is visible before sharing | `share` defaults to `private`, `audience` to `lists`; the main list starts private | checks 1, 10 |
 | A wish for chosen people or "only me" shows through a shared list | `can_view_wish` looks at `audience` first; `people` and `only_me` ignore the lists | checks 12, 13 |
-| The name of an unshared category ("Present till Bo") | `lists_select` uses `can_view_list`; the main list's sharing does not reveal categories | checks 11, 12 |
+| The name of an unshared category ("Present for Bo") | `lists_select` uses `can_view_list`; the main list's sharing does not reveal categories | checks 11, 12 |
 | That a visible wish sits in an unshared category | `list_items_select` needs both the list and the wish | checks 12, 14 |
 | Who else was chosen | `list_shares` and `wish_audience` are readable by the owner only | check 15 |
 | A photo of a hidden wish | `can_view_image` goes through `can_view_wish` | check 23 |

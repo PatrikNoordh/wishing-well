@@ -18,7 +18,7 @@ The repo has not been created yet, so changing now costs a search and replace, n
 
 - The app is called **Wishing Well**, in both Swedish and English. The name is never translated.
 - The repo is `wishing-well`. Expo slug `wishing-well`, deep-link scheme `wishingwell://`.
-- The personality lives in a slogan that follows the app language through the string `app.slogan`: **"Åh, en sån vill jag ha!"** in Swedish, **"Ooh, I want one of those!"** in English. It is used only where a slogan belongs: the sign-in screen, the store listing, and the empty "no wishes yet" screen. Not on every screen.
+- The personality lives in a slogan that follows the app language through the string `app.slogan`: **"Ooh, I want one of those!"** in `en.json`, with its Swedish translation in `sv.json`. It is used only where a slogan belongs: the sign-in screen, the store listing, and the empty "no wishes yet" screen. Not on every screen.
 - Unchanged: the ticket prefix `WISH-<N>`, the `wish-…` skills, and the branch and commit conventions. They still fit.
 - The Android package and iOS bundle identifier are `se.noordh.wishingwell`: reverse-domain form with the developer's surname, unique in the stores. It can never change once the app is published, and it stays even if the app later moves to a company account.
 
@@ -27,7 +27,7 @@ The repo has not been created yet, so changing now costs a search and replace, n
 | Option | Why not |
 |---|---|
 | Keep "Åh, en sån vill jag ha" | The problems above; the joke is kept as the Swedish slogan instead |
-| A Swedish name and an English name | Two names to keep apart in stores, screenshots and links; one untranslated name is simpler for a Swedish-first app |
+| A Swedish name and an English name | Two names to keep apart in stores, screenshots and links; one untranslated name is simpler for an app whose users start in Swedish |
 | A made-up brand word | Says nothing about what the app does; "Wishing Well" is about wishes and reads well in Swedish too |
 
 ## Consequences

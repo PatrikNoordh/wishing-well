@@ -135,11 +135,14 @@ Follow `CLAUDE.md` exactly. The rules that matter most:
 Run all of them. Each must pass before every commit:
 
 ```bash
+bash scripts/check-english.sh
 npm run lint
 npx tsc --noEmit
 npm test
 npm run build
 ```
+
+`scripts/check-english.sh` runs on every branch, also before `package.json` exists: Swedish belongs in `src/locales/sv.json` only (`CLAUDE.md` § Language).
 
 If the branch touches `supabase/`, also run the RLS tests against a throwaway local database:
 
@@ -246,7 +249,7 @@ When running unattended: print the summary and stop. Do not push, open a PR or p
 - [ ] No `any` or silencing casts; external input validated with zod
 - [ ] No hardcoded values: text via `t()` in sv and en, theme tokens, named constants
 - [ ] Loading, empty and error states; 360 dp, dark mode, large fonts, accessible
-- [ ] lint, tsc, test and build pass. RLS and Deno tests pass or are deferred to CI with a note
+- [ ] check-english, lint, tsc, test and build pass. RLS and Deno tests pass or are deferred to CI with a note
 - [ ] Commits follow `(MODEL_NAME) <type> [WISH-<N>]` and are staged by file
 - [ ] Self-review of the full diff done against the quality bar
 - [ ] Summary printed. Issue updated only with the developer's yes

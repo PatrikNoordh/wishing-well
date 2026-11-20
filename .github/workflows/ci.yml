@@ -13,6 +13,14 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  language:
+    name: English outside sv.json
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      # Always runs: Swedish belongs in src/locales/sv.json only (CLAUDE.md § Language).
+      - run: bash scripts/check-english.sh
+
   app:
     name: Lint, type check, test and bundle
     runs-on: ubuntu-latest

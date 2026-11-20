@@ -42,13 +42,14 @@ Take `WISH-<N>` from the branch name (`wish/WISH-<N>-...`). If the branch has no
 ## Before every commit
 
 ```bash
+bash scripts/check-english.sh
 npm run lint
 npx tsc --noEmit
 npm test
 npm run build
 ```
 
-All four must pass. `npm run build` (an `expo export` of the JS bundle) does not type-check, so `tsc` is not optional. If the commit touches `supabase/`, also run `bash supabase/tests/run_local.sh` (see `wish-implement-ticket` § Validation).
+All five must pass. `npm run build` (an `expo export` of the JS bundle) does not type-check, so `tsc` is not optional. If the commit touches `supabase/`, also run `bash supabase/tests/run_local.sh` (see `wish-implement-ticket` § Validation).
 
 ## Splitting into several commits
 

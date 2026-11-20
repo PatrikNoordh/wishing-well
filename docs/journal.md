@@ -13,12 +13,17 @@ Format:
 
 ---
 
+## 2026-11-20 — English as the working language
+**What happened:** The docs, tickets and skills named the UI by its Swedish labels, while everything else was in English. Rewrote them all in English, with a glossary of UI terms (en → sv) in `docs/ui-spec.md`, made `en.json` the language every string is written in first, and added `scripts/check-english.sh` and a `language` CI job that fail on Swedish letters outside `sv.json` and a short allowlist. The RLS test data is in English now too.
+**What I learned / decided:** The language users start in (Swedish) and the language the project is written in (English) are two separate choices. The first version of the check passed everything, because the allowlist variable never reached perl; a check is only trusted once it has been seen to fail.
+**Next:** Start WISH-1.
+
 ## 2026-11-19 — App id, tabs and icons
 **What happened:** Chose the app id `se.noordh.wishingwell` (0011), four tabs around the camera and Lucide icons (`docs/decisions/0012-tabs-and-icons.md`).
 **What I learned / decided:** The app id is the one name that can never change, so it was decided before the first build, not during it.
 
 ## 2026-11-19 — Slogan per language, and a portfolio project
-**What happened:** The slogan follows the app language: "Åh, en sån vill jag ha!" in Swedish, "Ooh, I want one of those!" in English (`app.slogan`). The app is the developer's own portfolio project, not the degree project, but it is still built as a real product to be released.
+**What happened:** The slogan follows the app language (`app.slogan`): "Ooh, I want one of those!" in English, with its Swedish translation in `sv.json`. The app is the developer's own portfolio project, not the degree project, but it is still built as a real product to be released.
 **What I learned / decided:** The old name found its place as the Swedish slogan. Without a degree deadline the order of the epics stays, but the pace follows LIA and the course.
 
 ## 2026-11-19 — New name: Wishing Well
@@ -32,7 +37,7 @@ Format:
 **Next:** Create the repo and start WISH-1.
 
 ## 2026-11-16 — Links, blocks, and preparing for search
-**What happened:** Added "Alla med länken" as a fourth way to share a list, blocking, and the schema for searchable profiles and public lists before there is a screen for them (`docs/decisions/0009-links-blocks-and-search.md`). 8 new RLS checks (34 in all). 21 of the new guards were broken on purpose; 19 were caught at once. The two that survived are block checks that a block already makes redundant on every other path, so they stay as a second layer and are written down as such.
+**What happened:** Added "Anyone with the link" as a fourth way to share a list, blocking, and the schema for searchable profiles and public lists before there is a screen for them (`docs/decisions/0009-links-blocks-and-search.md`). 8 new RLS checks (34 in all). 21 of the new guards were broken on purpose; 19 were caught at once. The two that survived are block checks that a block already makes redundant on every other path, so they stay as a second layer and are written down as such.
 **What I learned / decided:** Preparing the data model costs little while there are no users, and a column on a table with real data costs a lot later. A link needs an account, because "take it back" only works if you know who opened it. Being findable must not open anything but a name, otherwise search would leak birthdays.
 **Next:** The design system in the warm style, then the screens.
 
@@ -40,7 +45,7 @@ Format:
 
 **What happened:** Showed the first model (partner and friends as roles, a visibility per list) to the first users, and it did not match how they think. They want to pick people, keep one long list with categories, share a whole category in one tap, and still hide a single wish from everyone but one person. Also chose the name "Åh, en sån vill jag ha" and a warm, playful look (peach, coral, cream) after comparing three AI-generated mockups.
 
-**What I learned / decided:** Rebuilt the schema around folders and files: "Allt" and categories are lists that can be shared, a wish follows its lists unless it overrides them, and everything starts private (`docs/decisions/0007-sharing-model.md`). All visibility now goes through two functions, which made the rules easier to test: 26 RLS checks, and every guard in them was broken on purpose once. One guard survived at first (that every path needs a current connection), so a test was added that plants a leftover choice and proves a former contact still sees nothing.
+**What I learned / decided:** Rebuilt the schema around folders and files: "All" and categories are lists that can be shared, a wish follows its lists unless it overrides them, and everything starts private (`docs/decisions/0007-sharing-model.md`). All visibility now goes through two functions, which made the rules easier to test: 26 RLS checks, and every guard in them was broken on purpose once. One guard survived at first (that every path needs a current connection), so a test was added that plants a leftover choice and proves a former contact still sees nothing.
 
 **Next:** The design system, then the repo.
 

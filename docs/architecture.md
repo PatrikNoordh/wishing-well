@@ -66,9 +66,9 @@ sequenceDiagram
   participant DB as Postgres
   participant St as Storage
   participant Fn as Edge Functions
-  U->>App: Lägg till → photo
+  U->>App: Add → photo
   App->>App: resize and re-encode (no EXIF, no location)
-  App->>DB: insert wish (title "Ny önskan", list)
+  App->>DB: insert wish (title "New wish", list)
   App->>St: upload <owner>/<uuid>.jpg
   App->>DB: update wish.image_path
   Note over App: The wish is saved. The user can leave.
@@ -79,7 +79,7 @@ sequenceDiagram
   Fn->>Fn: AI web search → candidate pages
   Fn->>Fn: read each page's own price (link reader)
   Fn-->>App: offers, cheapest first
-  App->>U: "Stämmer det?" → accept or edit
+  App->>U: "Is this right?" → accept or edit
 ```
 
 ### Reserve a wish (epic 3)
@@ -103,7 +103,7 @@ The inviter creates an invite (random code, 7 days) and shares `wishingwell://in
 
 ### A list shared by link (epic 2)
 
-The owner sets a list to "Alla med länken"; the database makes the code (`list_links`, owner-only). The owner shares `wishingwell://l/<code>`. Whoever opens it signs in, and `open_list_link()` records them in `list_link_access` and returns the list. From then on `can_view_list` lets them see that list, and RLS does the rest as for a contact. "Ny länk" (`regenerate_list_link()`) or leaving "Alla med länken" deletes the old code and every recorded opening.
+The owner sets a list to "Anyone with the link"; the database makes the code (`list_links`, owner-only). The owner shares `wishingwell://l/<code>`. Whoever opens it signs in, and `open_list_link()` records them in `list_link_access` and returns the list. From then on `can_view_list` lets them see that list, and RLS does the rest as for a contact. "New link" (`regenerate_list_link()`) or leaving "Anyone with the link" deletes the old code and every recorded opening.
 
 ### Block (epic 1)
 

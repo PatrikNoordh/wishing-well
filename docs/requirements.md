@@ -25,9 +25,9 @@ The first users are one family and their friends, all on Android. iPhone users f
 - **R6a** Block anyone. We stop seeing and reaching each other in every way, and what was between us goes. They are not told.
 
 ### Wishes, categories and sharing
-- **R7** One long main list, "Allt", with every wish, and categories (Jul, Födelsedag, Inredning, Kök, Trädgård, my own) to filter it. A wish can be in several categories.
+- **R7** One long main list, "All", with every wish, and categories (Christmas, Birthday, Home decor, Kitchen, Garden, my own) to filter it. A wish can be in several categories.
 - **R8** Everything is private until I share it.
-- **R9** Share "Allt" or a category with all my contacts in one tap, or with chosen contacts. They see the list and every wish in it, also ones added later.
+- **R9** Share "All" or a category with all my contacts in one tap, or with chosen contacts. They see the list and every wish in it, also ones added later.
 - **R10** Override a single wish: only chosen contacts, or only me. The override wins over every list.
 - **R11** Nobody sees the name of a list that is not shared with them.
 - **R12a** Share a list with everyone who has its link, also people who are not my contacts yet. They sign in to open it. I can see who opened it, make a new link that shuts out everyone who came through the old one, or stop sharing by link.
@@ -49,10 +49,10 @@ The first users are one family and their friends, all on Android. iPhone users f
 - **N2 Security:** every rule in R3–R20 (R6a and R12a included) is enforced by the database (RLS), not by the app, and tested in CI.
 - **N3 Speed:** saving a wish never waits for AI or the network; a list opens from cache at once and refreshes in the background.
 - **N4 Accessibility:** labels on every control, 48 dp touch targets, large system fonts, enough contrast in light and dark mode.
-- **N5 Language:** Swedish first, English second, both complete.
+- **N5 Language:** Swedish and English, both complete. The app starts in Swedish (default locale `sv`, fallback `en`); every text is written in English first (`CLAUDE.md` § Language).
 - **N6 Platforms:** Android first; iPhone from the same code without changes in the code.
 - **N7 Honest AI:** AI only suggests. A price shown as a shop's price is read from that shop's page.
-- **N8 Cost:** free or nearly free at family scale (Supabase free tier, AI per photo in öre).
+- **N8 Cost:** free or nearly free at family scale (Supabase free tier, AI at a fraction of a krona per photo).
 
 ## Out of scope for v1
 

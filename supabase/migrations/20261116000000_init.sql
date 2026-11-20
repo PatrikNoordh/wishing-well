@@ -1,7 +1,7 @@
 -- =============================================================================
 -- Wishing Well — initial schema
 --
--- People and their contacts, wishes, lists (the main list "Allt" and categories),
+-- People and their contacts, wishes, lists (the main list "All" and categories),
 -- sharing, reservations and the private photo bucket. Every table has RLS and
 -- explicit grants.
 --
@@ -72,8 +72,8 @@ create table public.invites (
 );
 create index invites_inviter_idx on public.invites (inviter_id);
 
--- A list: every person has one main list (is_main, no title: the app shows "Allt"),
--- which holds every wish, and any number of categories ("Jul", "Inredning").
+-- A list: every person has one main list (is_main, no title: the app shows "All"),
+-- which holds every wish, and any number of categories ("Christmas", "Home decor").
 -- share: 'private' (only me, the default), 'contacts' (all my contacts),
 -- 'people' (the contacts in list_shares), 'link' (anyone signed in who opened the
 -- list's link, see list_links and list_link_access), 'public' (anyone signed in;

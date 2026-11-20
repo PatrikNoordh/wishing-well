@@ -19,7 +19,7 @@ Pictures came up at the same time. Most wishes will start from window-shopping o
 1. The shop's own product image, from an offer the owner picked. Exact product, free, and the reader already fetches it.
 2. The owner's photo cleaned up (background removed). Later.
 3. The owner's photo as it is.
-4. An AI illustration, only when nothing else works. Later, and always tagged "AI-bild" for everyone.
+4. An AI illustration, only when nothing else works. Later, and always tagged "AI image" for everyone.
 
 The app never swaps a picture on its own; the owner chooses.
 
@@ -34,6 +34,6 @@ The app never swaps a picture on its own; the owner chooses.
 ## Consequences
 
 - WISH-3 builds `src/theme/` from the design system's `tokens.json` and adds `expo-linear-gradient` and the two font packages.
-- WISH-14, WISH-20 and WISH-24 gain screenshots, shared images and "Byt bild" with the shop's image.
+- WISH-14, WISH-20 and WISH-24 gain screenshots, shared images and "Change picture" with the shop's image.
 - A shop's image stored in the owner's folder is a copy of someone else's picture, shown only to the people the wish is shared with, as GoWish does. Check before a public launch.
-- Background removal and AI illustrations are in "Later"; the illustration needs the "AI-bild" tag and a cost check in `/wish-ai-eval`.
+- Background removal and AI illustrations are in "Later"; the illustration needs the "AI image" tag and a cost check in `/wish-ai-eval`.

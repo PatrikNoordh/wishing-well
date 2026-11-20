@@ -14,7 +14,7 @@ It is built first for one family and their friends, and with the foundations to 
 
 ## What it does
 
-- **One long list, "Allt",** with every wish, and **categories** (Jul, Födelsedag, Inredning …) to find your way. A wish can be in several.
+- **One long list, "All",** with every wish, and **categories** (Christmas, Birthday, Home decor …) to find your way. A wish can be in several.
 - **Private until you share.** Share a whole list or category with all your contacts or with chosen people, in one tap. Override a single wish: only these people, or only me.
 - **Wishes** with a photo, a link, a price, a shop and a note. A small glass label shows you who sees each one.
 - **Contacts:** invite people with a link. Nobody sees anything you have not shared with them, not even the names of your lists.

@@ -5,11 +5,11 @@
 
 ## Context
 
-The first UI spec had three tabs (Mina önskningar, Folk, Reserverat), with settings behind the profile avatar. The design system and the prototype were drawn with the camera button in the middle of the tab bar, which needs an even number of tabs around it. The prototype also needed a set of icons, drawn in one style.
+The first UI spec had three tabs (My wishes, People, Reserved), with settings behind the profile avatar. The design system and the prototype were drawn with the camera button in the middle of the tab bar, which needs an even number of tabs around it. The prototype also needed a set of icons, drawn in one style.
 
 ## Decision
 
-- **Four tabs** around the camera button: Önskningar, Folk, **camera**, Reserverat, Jag. "Jag" holds the profile and settings; the avatar in the header also opens it.
+- **Four tabs** around the camera button: Wishes, People, **camera**, Reserved, Me. "Me" holds the profile and settings; the avatar in the header also opens it.
 - **Icons from Lucide** (`lucide-react-native`, with `react-native-svg`), approved in WISH-3. Line icons on a 24 grid with a 2 px stroke, coloured from the theme.
 
 ## Alternatives

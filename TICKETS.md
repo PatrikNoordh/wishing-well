@@ -19,7 +19,7 @@ The base everything else stands on. A development build, not Expo Go, because th
 
 **Acceptance Criteria**
 - [ ] AC1: Expo app on the latest stable SDK (58 when planned) created with the default TypeScript template, Expo Router with routes in `src/app/`, TypeScript `strict`
-- [ ] AC2: `app.json`: name "Wishing Well", slug `wishing-well`, scheme `wishingwell`, Android package and iOS bundle identifier `se.noordh.wishingwell` (decided in `docs/decisions/0011-name-and-slogan.md`; it can never change once the app is published), and the camera and photo-library permission texts in Swedish
+- [ ] AC2: `app.json`: name "Wishing Well", slug `wishing-well`, scheme `wishingwell`, Android package and iOS bundle identifier `se.noordh.wishingwell` (decided in `docs/decisions/0011-name-and-slogan.md`; it can never change once the app is published), and the camera and photo-library permission texts, written in English and translated to Swedish through Expo's `locales` setting (its Swedish file joins the allowlist in `scripts/check-english.sh`)
 - [ ] AC3: `expo-dev-client` added; `eas.json` with profiles `development` (internal, dev client), `preview` (internal, Android APK) and `production`. The developer runs the first `eas build --profile development --platform android` and installs it on their phone (manual step; Claude prints the command)
 - [ ] AC4: ESLint with the Expo config and Prettier. `npm run lint` has no errors
 - [ ] AC5: Jest with `jest-expo` and React Native Testing Library. One test renders the start screen. `npm test` passes
@@ -36,7 +36,7 @@ Out of scope: screens, Supabase.
 ### WISH-2 · chore · CI green on the first pull request
 
 **Context**
-`.github/workflows/ci.yml` is in the repo from the plan commit. Its `app` and `functions` jobs wait until there is an app and a function to check. This ticket makes sure all three jobs really run and fail when they should.
+`.github/workflows/ci.yml` is in the repo from the plan commit. Its `app` and `functions` jobs wait until there is an app and a function to check. The `language` job runs from the start. This ticket makes sure all four jobs really run and fail when they should.
 
 **Acceptance Criteria**
 - [ ] AC1: The `app` job runs `npm ci`, `npm run lint`, `npx tsc --noEmit`, `npm test` and `npm run build` on every pull request and is green
@@ -53,11 +53,11 @@ Out of scope: end-to-end tests (epic 7).
 Text, colours and sizes get one home before there are screens, so nothing is ever hardcoded (`CLAUDE.md` § No hardcoded values). Doing it now costs one ticket; doing it later means finding every value twice.
 
 **Acceptance Criteria**
-- [ ] AC1: `i18next`, `react-i18next` and `expo-localization` added (approved by this ticket). `src/locales/sv.json` is the default and source language, `en.json` the second. The phone's language picks the default
+- [ ] AC1: `i18next`, `react-i18next` and `expo-localization` added (approved by this ticket). `src/locales/en.json` is the source language every string is written in first, `sv.json` its translation (`CLAUDE.md` § Language). The phone's language picks the locale; Swedish is the default and `en` the fallback
 - [ ] AC2: Translation keys are typed, so a missing or misspelled key fails `npx tsc --noEmit`
 - [ ] AC3: Counts use i18next plurals, never manual if/else. Dates, prices and currencies are formatted with `Intl` through one shared helper
 - [ ] AC4: A test checks that `sv` and `en` have exactly the same keys and no empty values
-- [ ] AC5: `app.name` is "Wishing Well" in both locales; `app.slogan` is "Åh, en sån vill jag ha!" in `sv.json` and "Ooh, I want one of those!" in `en.json`
+- [ ] AC5: `app.name` is "Wishing Well" in both locales; `app.slogan` is "Ooh, I want one of those!" in `en.json`, with its Swedish translation in `sv.json`
 - [ ] AC6: `lucide-react-native` and `react-native-svg` added for icons (approved by this ticket, `docs/decisions/0012-tabs-and-icons.md`); icons are 24 grid, 2 px stroke, colour from the theme
 - [ ] AC7: `src/theme/` built from the design system's `tokens.json` (the design system artifact (https://claude.ai/artifact/FM4zenrV1VAiiQ1M81sn1o), `docs/decisions/0010-look-and-pictures.md`): colours for light and dark mode (following the system setting), spacing, radii, shadows and type scale, with contrast checked for text on every background
 - [ ] AC8: The light background gradient (`expo-linear-gradient`) and the fonts Inter and Nunito (`@expo-google-fonts/inter`, `@expo-google-fonts/nunito`), all approved by this ticket
@@ -77,7 +77,7 @@ A small set of components that every screen uses, so the app looks and behaves l
 - [ ] AC3: Every control has an accessibility label and role, touch targets are at least 48 dp, and text scales with the system font size without clipping
 - [ ] AC4: A hidden developer screen shows every block in light and dark mode
 - [ ] AC5: Component tests for `Button`, `TextField` and `States`
-- [ ] AC6: `TabBar`: four tabs (Önskningar, Folk, Reserverat, Jag) around the round accent camera button in the middle (`docs/decisions/0012-tabs-and-icons.md`, the design system's TabBar)
+- [ ] AC6: `TabBar`: four tabs (Wishes, People, Reserved, Me) around the round accent camera button in the middle (`docs/decisions/0012-tabs-and-icons.md`, the design system's TabBar)
 
 **Scope Boundary**
 Out of scope: screens.
@@ -142,16 +142,16 @@ Out of scope: screens.
 Being contacts is the only way anything can be shared, but connecting shares nothing by itself (`docs/decisions/0007-sharing-model.md`). Accepting goes through `accept_invite()` only.
 
 **Acceptance Criteria**
-- [ ] AC1: "Bjud in" creates an invite and opens the phone's share sheet with a link `wishingwell://invite/<code>` and a short, friendly text
-- [ ] AC2: Opening the link signs in if needed, shows `preview_invite()` ("Anna vill lägga till dig som kontakt") and lets the person accept or decline
+- [ ] AC1: "Invite" creates an invite and opens the phone's share sheet with a link `wishingwell://invite/<code>` and a short, friendly text
+- [ ] AC2: Opening the link signs in if needed, shows `preview_invite()` ("Anna wants to add you as a contact.") and lets the person accept or decline
 - [ ] AC3: Every error code from `accept_invite()` has a clear translated message
-- [ ] AC4: Folk lists my contacts and open invites (with revoke), and lets me end a contact after a confirmation that says what goes with it: their access to everything I shared, and reservations between us
-- [ ] AC5: After connecting, the app says plainly that nothing is shared yet and offers to share "Allt" or a category
+- [ ] AC4: People lists my contacts and open invites (with revoke), and lets me end a contact after a confirmation that says what goes with it: their access to everything I shared, and reservations between us
+- [ ] AC5: After connecting, the app says plainly that nothing is shared yet and offers to share "All" or a category
 - [ ] AC6: Manual test on the phone and the emulator: invite accepted, used and expired links refused
-- [ ] AC7: Block from a person's menu, after a confirmation that says what goes with it and that they are not told. Inställningar → Blockerade lists them with "Häv blockering" (which brings nothing back). Manual test: after a block the other account sees nothing of mine, cannot open my invite or list link, and I am gone from their Folk (`rls_test.sql` check 33)
+- [ ] AC7: Block from a person's menu, after a confirmation that says what goes with it and that they are not told. Settings → Blocked lists them with "Unblock" (which brings nothing back). Manual test: after a block the other account sees nothing of mine, cannot open my invite or list link, and I am gone from their People (`rls_test.sql` check 33)
 
 **Scope Boundary**
-Out of scope: reporting someone, groups of contacts ("Familjen"), an https link that opens a web page when the app is not installed.
+Out of scope: reporting someone, groups of contacts ("Family"), an https link that opens a web page when the app is not installed.
 
 ### WISH-10 · feat · Delete my account
 
@@ -161,7 +161,7 @@ Both app stores require it, and it is the right thing to do.
 **Acceptance Criteria**
 - [ ] AC1: Edge Function `delete-account`: checks the caller, deletes the caller's folder in `wish-images`, then the Auth user with the service role (the one privileged action). Everything else goes by cascade (`rls_test.sql` check 34)
 - [ ] AC2: If the photo delete fails, the account is not deleted and the error is returned; running it again finishes the job
-- [ ] AC3: Settings → "Radera mitt konto" with a confirmation that says what disappears
+- [ ] AC3: Settings → "Delete my account" with a confirmation that says what disappears
 - [ ] AC4: Deno tests for the handler: not signed in, photo delete fails, success
 - [ ] AC5: `docs/data-safety.md` § delete chains updated
 
@@ -173,21 +173,21 @@ Both app stores require it, and it is the right thing to do.
 
 The sharing model in `docs/decisions/0007-sharing-model.md`, built in the order the owner meets it.
 
-### WISH-11 · feat · Wishes in "Allt"
+### WISH-11 · feat · Wishes in "All"
 
 **Acceptance Criteria**
-- [ ] AC1: "Allt" shows every wish of mine, newest first, as cards with photo, title, price and shop
+- [ ] AC1: "All" shows every wish of mine, newest first, as cards with photo, title, price and shop
 - [ ] AC2: Create, edit and delete wishes with title (required), link, price, currency (SEK default), shop and note, with the same limits as the database
-- [ ] AC3: "Öppna i butiken" opens the link in the browser
+- [ ] AC3: "Open in shop" opens the link in the browser
 - [ ] AC4: New wishes are private: a first-time hint says so and shows how to share
 
 ### WISH-12 · feat · Categories
 
 **Acceptance Criteria**
-- [ ] AC1: Create, rename and delete categories. Suggestions on first use: Jul, Födelsedag, Inredning, Kök, Trädgård
+- [ ] AC1: Create, rename and delete categories. Suggestions on first use: Christmas, Birthday, Home decor, Kitchen, Garden
 - [ ] AC2: A wish can be put in several categories, from the wish and from the category
-- [ ] AC3: Category chips above "Allt" filter the list; the long list stays fast (virtualised) with hundreds of wishes
-- [ ] AC4: Deleting a category asks for confirmation and says that its wishes stay in "Allt"
+- [ ] AC3: Category chips above "All" filter the list; the long list stays fast (virtualised) with hundreds of wishes
+- [ ] AC4: Deleting a category asks for confirmation and says that its wishes stay in "All"
 
 ### WISH-13 · feat · Sharing lists and wishes
 
@@ -195,13 +195,13 @@ The sharing model in `docs/decisions/0007-sharing-model.md`, built in the order 
 Like sharing in Google Docs, and the heart of the app's privacy. Security rule 7.
 
 **Acceptance Criteria**
-- [ ] AC1: "Dela" on "Allt" and on each category: "Bara jag" (default), "Alla mina kontakter" (one tap), "Utvalda personer" (checkboxes for my contacts)
-- [ ] AC2: "Vem ser den?" on each wish: "Som listorna" (default, says who that is right now), "Bara utvalda" (pre-filled with who sees it now, so adding Jakob does not hide it from the others), "Bara jag". The sheet says that this choice wins over the lists
-- [ ] AC3: On my own cards, a small glass label on the photo shows who sees the wish, whichever way: "Alla", "Bo, Cleo +2", "Bara jag". Tapping it opens the sheet, which also says "Via Jul: Mamma, Bo". Labels are shown only to the owner. Glass with `expo-blur` (approved by this ticket; on Android with `BlurTargetView`), and a semi-transparent fill where blur is not available
+- [ ] AC1: "Share" on "All" and on each category: "Only me" (default), "All my contacts" (one tap), "Chosen people" (checkboxes for my contacts)
+- [ ] AC2: "Who can see this?" on each wish: "Same as the lists" (default, says who that is right now), "Only chosen people" (pre-filled with who sees it now, so adding Jakob does not hide it from the others), "Only me". The sheet says that this choice wins over the lists
+- [ ] AC3: On my own cards, a small glass label on the photo shows who sees the wish, whichever way: "Everyone", "Bo, Cleo +2", "Only me". Tapping it opens the sheet, which also says "Via Christmas: Mum, Bo". Labels are shown only to the owner. Glass with `expo-blur` (approved by this ticket; on Android with `BlurTargetView`), and a semi-transparent fill where blur is not available
 - [ ] AC4: Counts shown to others are computed only from what they can see
-- [ ] AC5: Manual test, phone and emulator: share a category with one contact, override one wish to another, set one to "Bara jag"; each contact sees exactly what the label says
-- [ ] AC6: "Alla med länken" in "Dela" (`docs/decisions/0009-links-blocks-and-search.md`): the link `wishingwell://l/<code>` with "Kopiera länk" and "Dela", "Ny länk" with a confirmation that the old one stops working, and "Har öppnat" with names. The glass label says "Alla med länken" for wishes seen that way
-- [ ] AC7: Manual test: share a category by link with an account that is not a contact; it sees that list only, not a "Bara jag" wish in it; after "Ny länk" it sees nothing (`rls_test.sql` checks 26–30)
+- [ ] AC5: Manual test, phone and emulator: share a category with one contact, override one wish to another, set one to "Only me"; each contact sees exactly what the label says
+- [ ] AC6: "Anyone with the link" in "Share" (`docs/decisions/0009-links-blocks-and-search.md`): the link `wishingwell://l/<code>` with "Copy link" and "Share", "New link" with a confirmation that the old one stops working, and "Opened by" with names. The glass label says "Anyone with the link" for wishes seen that way
+- [ ] AC7: Manual test: share a category by link with an account that is not a contact; it sees that list only, not an "Only me" wish in it; after "New link" it sees nothing (`rls_test.sql` checks 26–30)
 
 ### WISH-14 · feat · Photos
 
@@ -211,7 +211,7 @@ The camera is the heart of the app: two taps from start to photo.
 **Acceptance Criteria**
 - [ ] AC1: Take a photo with the camera or pick one from the gallery (`expo-image-picker`, approved by this ticket)
 - [ ] AC2: Resized to at most the size in `src/lib/constants.ts` and re-encoded to JPEG on the phone (`expo-image-manipulator`), which removes EXIF and location. A test or a manual check with a geotagged photo proves the location is gone (noted in the PR)
-- [ ] AC3: Uploaded to `wish-images/<owner_id>/<uuid>.jpg`; the wish is saved first and shows the photo as "laddar upp" until done; a failed upload can be retried
+- [ ] AC3: Uploaded to `wish-images/<owner_id>/<uuid>.jpg`; the wish is saved first and shows the photo as "Uploading…" until done; a failed upload can be retried
 - [ ] AC4: Photos are shown through signed URLs that are refreshed when they expire, with a placeholder while loading
 - [ ] AC5: Deleting a wish or changing its photo deletes the old file (photo first, then the row, so a failure never leaves a row pointing at nothing)
 - [ ] AC6: Screenshots are a first-class source: the gallery picker opens on recent images, and a screenshot of a shop page works as well as a photo (most wishes will come from window-shopping on the phone)
@@ -225,10 +225,10 @@ The camera is the heart of the app: two taps from start to photo.
 ### WISH-15 · feat · A contact's wishes
 
 **Acceptance Criteria**
-- [ ] AC1: Folk → a person → "Allt jag kan se" and the categories shared with me, read-only, as RLS allows. Nothing hints at what I cannot see
-- [ ] AC2: Birthday shown with "fyller år om 12 dagar" when known
+- [ ] AC1: People → a person → "All I can see" and the categories shared with me, read-only, as RLS allows. Nothing hints at what I cannot see
+- [ ] AC2: Birthday shown with "Birthday in 12 days" when known
 - [ ] AC3: Pull to refresh, and the screen handles losing access while open (a share taken back, a contact ended, a new link, a block)
-- [ ] AC4: Opening a list link (`wishingwell://l/<code>`) signs in if needed, calls `open_list_link()` and shows that list in the same screen, with reserving. `link_not_found` shows one message for every reason. Lists opened by link stay reachable from Folk under the owner's name
+- [ ] AC4: Opening a list link (`wishingwell://l/<code>`) signs in if needed, calls `open_list_link()` and shows that list in the same screen, with reserving. `link_not_found` shows one message for every reason. Lists opened by link stay reachable from People under the owner's name
 
 ### WISH-16 · feat · Reserve and unreserve
 
@@ -236,9 +236,9 @@ The camera is the heart of the app: two taps from start to photo.
 The promise of the app: no duplicate gifts, and no spoiled surprises. Security rule 1.
 
 **Acceptance Criteria**
-- [ ] AC1: On someone else's wish: "Jag köper den" reserves it, "Ångra" removes my reservation
-- [ ] AC2: Others see "Reserverad" (with the name when they know the person); the owner sees nothing different, anywhere in the app
-- [ ] AC3: Two people reserving at once: the second gets a clear "någon hann före" message (unique violation mapped to `already_reserved`)
+- [ ] AC1: On someone else's wish: "I'll buy it" reserves it, "Undo" removes my reservation
+- [ ] AC2: Others see "Reserved" (with the name when they know the person); the owner sees nothing different, anywhere in the app
+- [ ] AC3: Two people reserving at once: the second gets a clear "Someone got there first" message (unique violation mapped to `already_reserved`)
 - [ ] AC4: Query keys and caches are checked so that switching accounts on one phone never shows reservations to the owner
 - [ ] AC5: Manual test with three accounts (phone, emulator, and a second emulator or another phone): one contact reserves, another who sees the wish sees it reserved, the owner sees nothing
 
@@ -268,13 +268,13 @@ Reads name, image, price and currency from a shop page, the way GoWish does when
 ### WISH-19 · feat · Paste a link
 
 **Acceptance Criteria**
-- [ ] AC1: Add wish → "Klistra in länk" fills the form from `import-link`; the user can change everything before saving
+- [ ] AC1: Add → "Paste link" fills the form from `import-link`; the user can change everything before saving
 - [ ] AC2: The product image can be saved as the wish's photo (downloaded, re-encoded and uploaded like a camera photo)
 
 ### WISH-20 · feat · Share a link to the app
 
 **Acceptance Criteria**
-- [ ] AC1: The app appears in Android's share sheet for links and images (`expo-sharing` share receiving, approved by this ticket); a shared link opens Add wish with the link imported, a shared image (a screenshot) opens it with the image as the photo
+- [ ] AC1: The app appears in Android's share sheet for links and images (`expo-sharing` share receiving, approved by this ticket); a shared link opens Add with the link imported, a shared image (a screenshot) opens it with the image as the photo
 - [ ] AC2: Works when the app was closed and when it was open
 - [ ] AC3: iOS share receiving is configured but marked experimental in the README
 
@@ -317,11 +317,11 @@ Before building the feature, find out how well it can work. The test set and the
 ### WISH-24 · feat · Add a wish from a photo
 
 **Acceptance Criteria**
-- [ ] AC1: After the photo, the wish is saved at once with a "Letar…" state; suggestions arrive without blocking the user
-- [ ] AC2: "Stämmer det?" sheet: the suggested name and the offers, cheapest first; one tap to accept, everything editable
-- [ ] AC3: "Sök själv" opens the browser with the search phrase
+- [ ] AC1: After the photo, the wish is saved at once with a "Looking for prices…" state; suggestions arrive without blocking the user
+- [ ] AC2: "Is this right?" sheet: the suggested name and the offers, cheapest first; one tap to accept, everything editable
+- [ ] AC3: "Search yourself" opens the browser with the search phrase
 - [ ] AC4: Works when the AI or the search fails: the wish keeps its photo and title, with a calm message
-- [ ] AC5: "Byt bild" on the owner's wish: use the shop's own product image from an offer the owner picked. The image is fetched by the SSRF-safe reader (security rule 10: size and type checked, nothing followed off the shop's site), re-encoded and stored in the owner's folder like a photo. The owner's own photo is kept until they choose (`docs/decisions/0010-look-and-pictures.md`)
+- [ ] AC5: "Change picture" on the owner's wish: use the shop's own product image from an offer the owner picked. The image is fetched by the SSRF-safe reader (security rule 10: size and type checked, nothing followed off the shop's site), re-encoded and stored in the owner's folder like a photo. The owner's own photo is kept until they choose (`docs/decisions/0010-look-and-pictures.md`)
 
 ### WISH-25 · docs · Choose the default AI provider
 
@@ -371,16 +371,16 @@ Before building the feature, find out how well it can work. The test set and the
 
 - Reminders before a connection's birthday (push).
 - Price watch: a notice when a wished item gets cheaper.
-- "Gör bilden snyggare": remove the background of the owner's photo or screenshot (on the phone or in an Edge Function), so a messy shop photo looks like a product shot.
-- An AI illustration when no usable picture exists: the AI says what the thing is (or asks the owner), and an image model draws one. Always tagged "AI-bild" on the card for everyone, so nobody buys from a drawing. Costs per image; measure in `/wish-ai-eval` first.
+- "Make the picture nicer": remove the background of the owner's photo or screenshot (on the phone or in an Edge Function), so a messy shop photo looks like a product shot.
+- An AI illustration when no usable picture exists: the AI says what the thing is (or asks the owner), and an image model draws one. Always tagged "AI image" on the card for everyone, so nobody buys from a drawing. Costs per image; measure in `/wish-ai-eval` first.
 - Prisjakt as a second price source, if partner access is granted.
 - iPhone build through the Apple Developer Program and TestFlight.
 - A web view of a list for people without the app (a read-only page for a link, through an Edge Function).
-- Searchable profiles: a screen for `handle`, "Låt andra hitta mig" and search (`search_profiles()` is ready and tested, check 32). Decide what a found person may do (send an invite?).
+- Searchable profiles: a screen for `handle`, "Let others find me" and search (`search_profiles()` is ready and tested, check 32). Decide what a found person may do (send an invite?).
 - Public lists on a profile (`share = 'public'` is ready and tested, check 31). Decide first whether the birthday is shown to people who only see a public list.
 - Reporting a person or a list, once anything is public.
 - Google Play release (a new personal account needs a closed test with 12 testers for 14 days first).
-- Where the photo was taken as a hint ("sett hos …"), opt-in.
+- Where the photo was taken as a hint ("seen at …"), opt-in.
 
 ---
 

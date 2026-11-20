@@ -6,13 +6,13 @@ Read this file before every task. It defines what the project is, how it is buil
 
 A wish-list app for Android and iPhone. You see something you want, take a photo, and it lands on your list. The app works out what it is and which online shops sell it, cheapest first. You choose who sees what, like sharing in Google Docs, and the people who see a wish can reserve it, so nobody buys the same thing twice. You never see what has been reserved.
 
-The app is called **Wishing Well**, in both Swedish and English; the name is never translated. The slogan follows the app language through the string `app.slogan`: "Åh, en sån vill jag ha!" in Swedish, "Ooh, I want one of those!" in English. It is used only where a slogan belongs: the sign-in screen, the store listing and the empty "no wishes yet" screen (`docs/decisions/0011-name-and-slogan.md`). The repo is `wishing-well` and tickets are `WISH-<N>`.
+The app is called **Wishing Well**, in both Swedish and English; the name is never translated. The slogan follows the app language through the string `app.slogan`: "Ooh, I want one of those!" in `en.json`, with its Swedish translation in `sv.json`. It is used only where a slogan belongs: the sign-in screen, the store listing and the empty "no wishes yet" screen (`docs/decisions/0011-name-and-slogan.md`). The repo is `wishing-well` and tickets are `WISH-<N>`.
 
 The first users are the developer's partner, family and friends, all on Android. The app is still built to be released in Google Play and the App Store later, so every foundation is done properly from the start. It is the developer's portfolio project, built as a real product that will be released, so the process is documented as it happens.
 
 **Sharing, in one paragraph**
 
-Everything is private until the owner shares it. Every person has one long main list, "Allt", that holds every wish, and any number of categories ("Jul", "Inredning") that a wish can be in several of. A list (the main list or a category) is shared with all contacts, with chosen contacts, or with everyone who has its link; everyone it is shared with sees the list's name and every wish in it. A single wish can override its lists: only these people, or only me. The override always wins, even inside a list shared with everyone. Nobody sees the name of a list that is not shared with them. Anyone can be blocked, which hides two people from each other in every way. Details: `docs/decisions/0007-sharing-model.md` and `docs/decisions/0009-links-blocks-and-search.md`.
+Everything is private until the owner shares it. Every person has one long main list, "All", that holds every wish, and any number of categories ("Christmas", "Home decor") that a wish can be in several of. A list (the main list or a category) is shared with all contacts, with chosen contacts, or with everyone who has its link; everyone it is shared with sees the list's name and every wish in it. A single wish can override its lists: only these people, or only me. The override always wins, even inside a list shared with everyone. Nobody sees the name of a list that is not shared with them. Anyone can be blocked, which hides two people from each other in every way. Details: `docs/decisions/0007-sharing-model.md` and `docs/decisions/0009-links-blocks-and-search.md`.
 
 The look lives in the design system artifact (https://claude.ai/artifact/FM4zenrV1VAiiQ1M81sn1o): read its `project/README.md` and `project/tokens.json` before building any screen, and take every colour, size and font from `src/theme/`, which is built from those tokens (`docs/decisions/0010-look-and-pictures.md`).
 
@@ -32,7 +32,7 @@ The look lives in the design system artifact (https://claude.ai/artifact/FM4zenr
 | Contact | `connections` | One row per pair (`user_a < user_b`). No roles. Created only by `accept_invite()`. |
 | Block | `blocks` | Who blocked whom. Only the blocker sees the row. Creating one ends the contact, link access and reservations between the two. |
 | Invite | `invites` | A link with a random code, at most 7 days, used once. Previewed with `preview_invite()`. |
-| List | `lists` | One main list per person (`is_main`, no title, shown as "Allt"), plus categories with a title. `share` is `private` (default), `contacts`, `people`, `link` (whoever opened its link) or `public` (prepared, no screen in v1). |
+| List | `lists` | One main list per person (`is_main`, no title, shown as "All"), plus categories with a title. `share` is `private` (default), `contacts`, `people`, `link` (whoever opened its link) or `public` (prepared, no screen in v1). |
 | List link | `list_links`, `list_link_access` | The secret code of a list shared by link (owner only), and who has opened it. Written only by the database. A new code or leaving `link` shuts everyone out. |
 | List share | `list_shares` | The chosen contacts of a list shared with `people`. Only the owner sees these rows. |
 | Wish | `wishes` | Title, note, link, price, currency, shop, photo. Always in the owner's main list. `audience` is `lists` (default: follow the lists), `people` (only the chosen, whatever the lists say) or `only_me`. |
@@ -125,7 +125,7 @@ Nothing in app code is hardcoded. Every value has one named source:
 
 | What | Where it comes from |
 |---|---|
-| UI text | Translation keys via `t()`, in both `src/locales/sv.json` and `src/locales/en.json` |
+| UI text | Translation keys via `t()`, written in `src/locales/en.json` first and translated in `src/locales/sv.json` (§ Language) |
 | Colours | Theme tokens in `src/theme/colors.ts`, for light and dark. Never hex or rgb in components |
 | Spacing, sizes, radii, type | `src/theme/spacing.ts`, `src/theme/radii.ts`, `src/theme/typography.ts` |
 | Magic numbers | Named constants in `src/lib/constants.ts` (limits, delays, image sizes) |
@@ -136,12 +136,21 @@ Allowed exceptions: theme token definitions, dynamic values computed at runtime 
 
 ## UI and UX
 
-- UI text in Swedish and English. Swedish is the default. Code, comments, commits and docs in English.
+- UI text in English and Swedish, written in English first (§ Language). Swedish is the default locale for users.
 - Every new string gets a key in both locale files in the same commit.
 - Phones first: every screen works from 360 dp wide, in light and dark mode, with large system fonts.
 - **Adding a wish takes at most two taps** from opening the app to the camera.
-- **Never make the user wait for the AI.** A wish is saved at once; suggestions arrive later and are shown as "Stämmer det?" with an easy edit.
+- **Never make the user wait for the AI.** A wish is saved at once; suggestions arrive later and are shown as "Is this right?" with an easy edit.
 - Every list and screen that loads data has a loading, empty and error state, and works without network as far as it can.
+
+## Language
+
+English is the working language. Everything in this repo is written in English: code, comments, docs, `TICKETS.md`, skills, CI, commit messages, issue and PR text. All UI copy is written in English first, in `src/locales/en.json`; Swedish exists only as its translation in `src/locales/sv.json`. The app still starts in Swedish for users (default locale `sv`, fallback `en`): that is a runtime setting, not the language the project is written in.
+
+- New UI text goes into `en.json` first, then `sv.json`, in the same commit. Never hard-code UI text in components.
+- Everything written about the app names the UI by its English text from `en.json`: "**+ Add wish**", never its Swedish label from `sv.json`. Docs, tickets, PRs, issue comments, manual test steps, commits and code comments all do, so anyone can follow them. The terms are in `docs/ui-spec.md` § UI terms (en → sv); a new term is added there.
+- No Swedish anywhere outside `src/locales/sv.json`, except the allowlist in `scripts/check-english.sh`: the glossary in `docs/ui-spec.md`, and `docs/journal.md` and `docs/decisions/0011-name-and-slogan.md`, which quote the app's old name as history. Test data is in English. A Swedish text that is itself the subject (a translation fix) is quoted in the PR with the English beside it.
+- `bash scripts/check-english.sh` fails on any Swedish letter (a with ring, a or o with diaeresis, either case) outside the allowlist. CI runs it in the `language` job, and `/wish-implement-ticket` and `/wish-git-ship` run it before every commit and push.
 
 ## GitHub
 
@@ -155,7 +164,7 @@ Allowed exceptions: theme token definitions, dynamic values computed at runtime 
 - **Branch:** `wish/WISH-<N>-short-description`
 - **Commit:** `(MODEL_NAME) <type> [WISH-<N>] description`. Types: feat, fix, style, refactor, chore, docs, test.
 - **Commits are small and each one builds.** Order within a feature: database → Edge Functions → data layer → UI.
-- **Before every commit:** `npm run lint`, `npx tsc --noEmit`, `npm test` and `npm run build` (an `expo export` of the JS bundle) must pass.
+- **Before every commit:** `bash scripts/check-english.sh`, `npm run lint`, `npx tsc --noEmit`, `npm test` and `npm run build` (an `expo export` of the JS bundle) must pass.
 - **Database changes** go in a new migration in `supabase/migrations/`, get a matching check in `supabase/tests/rls_test.sql`, and `supabase/tests/run_local.sh` passes before the PR.
 - **Migrations reach the project before the merge.** A migration is never left to "apply later".
   - Migrations must be backwards compatible with the code on `main`: add columns with a default or as nullable, and drop or rename only in a later migration once no code on `main` uses the old shape.

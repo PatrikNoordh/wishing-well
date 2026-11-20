@@ -91,14 +91,14 @@ Problem:
 listWishes returns data without checking error. A failed query renders an empty list instead of the error state.
 
 Why it matters:
-The owner sees "Inga önskningar än" when the real problem is a failed request, and cannot retry.
+The owner sees "No wishes yet" when the real problem is a failed request, and cannot retry.
 
 Suggested fix:
 Throw when error is set so TanStack Query reaches the error state.
 
 Acceptance criteria:
 - [ ] AC1: listWishes throws when Supabase returns an error
-- [ ] AC2: The list screen shows ErrorState with "Försök igen" when the request fails
+- [ ] AC2: The list screen shows ErrorState with "Try again" when the request fails
 
 Source: /wish-audit-to-issues from /wish-epic-review 2, 2026-12-10.
 ```
