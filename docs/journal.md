@@ -13,6 +13,11 @@ Format:
 
 ---
 
+## 2026-11-21 — WISH-1: the Expo app
+**What happened:** Created the app from the SDK 58 default template, kept only the 12 of its 23 runtime dependencies that an empty Expo Router app needs, and added a development build, ESLint with Prettier, Jest with React Native Testing Library, and EAS profiles. Three surprises: npm refused to install the test tooling until `react-dom` was pinned to React's exact version (an optional web peer of Expo Router); TypeScript 6 no longer loads `@types/*` packages by itself, so the Jest globals are named in `tsconfig.json`; and in Jest `expo-constants` has no app config, so the start-screen test feeds it `app.json`.
+**What I learned / decided:** A template is a demo as much as a starting point: every dependency left in is one more thing to build, update and explain. The permission texts are written in English, and Expo's `locales` setting carries the Swedish ones into the iOS build; Android shows its own system dialog. An `expo prebuild` in a scratch folder showed both in the generated projects before any build credit was spent.
+**Next:** The first development build on the phone, then WISH-2.
+
 ## 2026-11-20 — English as the working language
 **What happened:** The docs, tickets and skills named the UI by its Swedish labels, while everything else was in English. Rewrote them all in English, with a glossary of UI terms (en → sv) in `docs/ui-spec.md`, made `en.json` the language every string is written in first, and added `scripts/check-english.sh` and a `language` CI job that fail on Swedish letters outside `sv.json` and a short allowlist. The RLS test data is in English now too.
 **What I learned / decided:** The language users start in (Swedish) and the language the project is written in (English) are two separate choices. The first version of the check passed everything, because the allowlist variable never reached perl; a check is only trusted once it has been seen to fail.

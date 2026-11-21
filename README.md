@@ -4,7 +4,7 @@
 
 A wish-list app for Android and iPhone. See something you want, take a photo, and it lands on your list. The app works out what it is and which online shops sell it, cheapest first. You choose who sees what, like sharing in Google Docs: your partner, your family, a friend. They can reserve a gift so nobody buys the same thing twice — and you never see what has been reserved.
 
-> **Status:** planning done, epic 0 not started. The plan is in [`TICKETS.md`](TICKETS.md); the live tickets are the GitHub issues.
+> **Status:** epic 0 (foundation) in progress. The plan is in [`TICKETS.md`](TICKETS.md); the live tickets are the GitHub issues.
 
 ## Why
 
@@ -52,7 +52,53 @@ Every table has Row Level Security and explicit grants, and the policies are tes
 
 ## Run locally
 
-*Filled in by WISH-1.*
+The app runs as a **development build** (a debug build of this app with `expo-dev-client`), never in Expo Go: it uses native modules Expo Go does not have.
+
+**Once per machine:** Node 22 or later, [Android Studio](https://developer.android.com/studio) with an emulator, and an [Expo account](https://expo.dev) for EAS Build (`npx eas-cli@latest login`).
+
+**Install:**
+
+```bash
+npm ci
+cp .env.example .env.local   # fill in from Supabase (from WISH-6)
+```
+
+**Build and install the development build** (once, and again whenever a native module or an `app.json` plugin changes; the PR says so). Builds run on EAS and cost build credits:
+
+```bash
+npx eas-cli@latest build --profile development --platform android
+```
+
+When it finishes, open the build's link on the phone, or scan its QR code, and install the APK. For the emulator, answer yes when `eas build` asks to install it, or drag the APK onto the running emulator.
+
+On a Mac, the iOS Simulator needs no Apple Developer account: `npx eas-cli@latest build --profile development-simulator --platform ios`, then drag the `.app` onto the simulator.
+
+**Start Metro** and open the app:
+
+```bash
+npm start          # then press a for the Android emulator, or scan the QR code with the phone
+npm run android    # starts Metro and opens the app in the running emulator
+```
+
+The phone and the computer must be on the same network (or run `npx expo start --dev-client --tunnel`).
+
+**The small-screen emulator.** Every screen must work at 360 dp wide with large fonts (`CLAUDE.md` § UI and UX). In Android Studio → Device Manager → Create Virtual Device → Phone → **Small Phone** (720 × 1280, xhdpi: 360 dp wide), with the newest Google Play system image. Then, with the emulator running:
+
+```bash
+adb shell settings put system font_scale 1.3   # large fonts; 1.0 resets
+```
+
+The same emulator doubles as the second account in manual tests (owner on the phone, a contact in the emulator).
+
+**Checks** (the same as CI):
+
+```bash
+bash scripts/check-english.sh
+npm run lint
+npx tsc --noEmit
+npm test
+npm run build      # expo export for Android and iOS: catches bundling errors without a native build
+```
 
 RLS tests against a local Postgres (no Supabase needed):
 
