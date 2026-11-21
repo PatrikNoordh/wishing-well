@@ -1,0 +1,9 @@
+node_modules/
+dist/
+.expo/
+package-lock.json
+# Docs, SQL, CI and Claude settings keep their hand-written layout.
+*.md
+supabase/
+.github/
+.claude/
