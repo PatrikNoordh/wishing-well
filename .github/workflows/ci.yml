@@ -26,24 +26,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      # The Expo app arrives in WISH-1. Until then this job only checks out and stops.
-      - id: has
-        run: if [ -f package.json ]; then echo "app=true" >> "$GITHUB_OUTPUT"; fi
-      - if: steps.has.outputs.app == 'true'
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: npm
-      - if: steps.has.outputs.app == 'true'
-        run: npm ci
-      - if: steps.has.outputs.app == 'true'
-        run: npm run lint
-      - if: steps.has.outputs.app == 'true'
-        run: npx tsc --noEmit
-      - if: steps.has.outputs.app == 'true'
-        run: npm test -- --ci
-      - if: steps.has.outputs.app == 'true'
-        run: npm run build
+      - run: npm ci
+      # --max-warnings 0 (in package.json): a lint warning fails the job too.
+      - run: npm run lint
+      - run: npx tsc --noEmit
+      - run: npm test -- --ci
+      - run: npm run build
 
   functions:
     name: Edge Functions (deno check and test)
