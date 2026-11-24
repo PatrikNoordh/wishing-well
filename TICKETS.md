@@ -398,3 +398,6 @@ Format: `- [ ] <What is wrong or could be better> — <file or screen> (found in
 Findings from `/wish-review-pr`. Blockers and real bugs are fixed on the branch before the merge; they do not go here. Small things get one line each, so they are not forgotten. They are triaged at the epic checkpoint like the list above.
 
 Format: `- [ ] <What could be better> — <file> (PR #<n>, WISH-<N>)`
+
+- [ ] Android Auto Backup is on by default (`android.allowBackup`), so the Supabase session WISH-6 stores could be copied to the user's Google Drive backup; decide in WISH-6 whether to turn it off or exclude the session — `app.json` (PR #29, WISH-1)
+- [ ] `extra.router.asyncRoutes.web` is a template leftover for a web build the app does not have — `app.json` (PR #29, WISH-1)
