@@ -7,7 +7,6 @@ import { StyleSheet, Text, View } from 'react-native';
 export default function StartScreen() {
   const { colors } = useTheme();
   const appName = Constants.expoConfig?.name ?? '';
-  const unused = appName;
 
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>

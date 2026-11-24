@@ -688,7 +688,7 @@ create policy list_items_delete on public.list_items for delete to authenticated
 create policy reservations_select on public.reservations for select to authenticated
   using (
     reserved_by = (select auth.uid())
-    or public.can_view_wish(wish_id)
+    or (public.can_view_wish(wish_id) and not public.owns_wish(wish_id))
   );
 create policy reservations_insert on public.reservations for insert to authenticated
   with check (
