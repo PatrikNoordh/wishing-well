@@ -1,5 +1,8 @@
 name: CI
 
+# All four jobs are required checks on main (branch protection). Never add a paths filter
+# here or a job-level `if:`: a required check that never starts leaves the PR stuck as
+# "Expected". Skip inside a job with step-level `if:` instead, as `functions` does.
 on:
   pull_request:
   push:
