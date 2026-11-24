@@ -15,7 +15,7 @@ Format:
 
 ## 2026-11-24 — WISH-2: CI that fails when it should
 **What happened:** CI was already green, so the work was proving it can go red. A throwaway commit let the owner see reservations on their own wishes and added an unused variable. The RLS job stopped at check 19 ("owner sees reservations"), but the lint step would have passed: `expo lint` exits 0 on warnings. It now runs with `--max-warnings 0`. The `app` job also lost its "skip without a `package.json`" guard from before the app existed, which would have shown green with nothing checked. Branch protection then failed with a 403: GitHub Free only protects branches on public repos. The repo was made public after a scan of every file version, issue and PR for keys and personal data found none.
-**What I learned / decided:** Green only means something once you have seen red. A guard written for the time before something exists has to go when it arrives, or it turns into a silent pass. `main` now takes changes only through a PR with all four jobs green, for the admin too.
+**What I learned / decided:** Green only means something once you have seen red. A guard written for the time before something exists has to go when it arrives, or it turns into a silent pass. `main` now takes changes only through a PR with all four jobs green, for the admin too. Every PR is squash-merged from now on, so `main` gets one commit per ticket, titled by the PR in the commit convention, while throwaway commits like this ticket's deliberate break stay on the branch.
 **Next:** WISH-3, Swedish and English, and the theme.
 
 ## 2026-11-21 — WISH-1: the Expo app

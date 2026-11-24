@@ -156,6 +156,12 @@ English is the working language. Everything in this repo is written in English: 
 
 - All work happens in feature branches and is merged into `main` through pull requests. Never commit directly to `main`.
 - `main` always builds and runs on a phone.
+- `main` is protected: a pull request is required, all four CI jobs must pass on a branch that is up to date with `main`, the history must be linear, and the rules apply to admins too.
+- **Every PR is squash-merged.** Merge commits and rebase merges are turned off in the repo settings, so each PR becomes exactly one commit on `main`:
+  - The PR title becomes the commit title, so it follows the commit convention in § Workflow: `(MODEL_NAME) <type> [WISH-<N>] description`, at most 65 characters, because GitHub adds ` (#<n>)`.
+  - The PR description becomes the commit body, so keep it short and useful as history: the template's sections, a line or two each, with no leftover `<!-- -->` hints. Logs, screenshots and long notes go in PR comments.
+  - Put any `Co-Authored-By` trailer at the very end of the description, so it survives the squash.
+  - Throwaway and work-in-progress commits are fine on the branch, since they never reach `main`.
 
 ## Workflow
 
@@ -163,7 +169,7 @@ English is the working language. Everything in this repo is written in English: 
 - **Skills:** the project skills in `.claude/skills/` run the workflow: `wish-create-ticket`, `wish-implement-ticket`, `wish-git-commit`, `wish-git-ship`, `wish-git-branch-and-ship`, `wish-review-pr`, `wish-data-safety`, `wish-epic-review`, `wish-epic-close`, `wish-audit-to-issues`, `wish-ai-eval`. Use them instead of personal skills with similar names.
 - **Branch:** `wish/WISH-<N>-short-description`
 - **Commit:** `(MODEL_NAME) <type> [WISH-<N>] description`. Types: feat, fix, style, refactor, chore, docs, test.
-- **Commits are small and each one builds.** Order within a feature: database → Edge Functions → data layer → UI.
+- **Commits are small and each one builds.** Order within a feature: database → Edge Functions → data layer → UI. A throwaway or work-in-progress commit is the exception: it is fine on the branch (§ GitHub), as long as the branch passes the checks below before it is pushed for review.
 - **Before every commit:** `bash scripts/check-english.sh`, `npm run lint`, `npx tsc --noEmit`, `npm test` and `npm run build` (an `expo export` of the JS bundle) must pass.
 - **Database changes** go in a new migration in `supabase/migrations/`, get a matching check in `supabase/tests/rls_test.sql`, and `supabase/tests/run_local.sh` passes before the PR.
 - **Migrations reach the project before the merge.** A migration is never left to "apply later".
@@ -175,7 +181,7 @@ English is the working language. Everything in this repo is written in English: 
 - **EAS** (`eas build`, `eas update`, `eas submit`, `eas credentials`, `eas env`, `eas device`) is never run by Claude: builds cost credits, updates reach real phones and credentials are secrets. Claude prints the command; the developer runs it.
 - **Native changes need a new development build.** A PR that adds a native module or changes `app.json` plugins says so, and the developer builds and installs the new development build before testing.
 - **Data safety:** `/wish-review-pr` runs `/wish-data-safety` in diff mode. A 🔴 risk is a blocker fixed on the branch; a change to a chain, policy or guard updates `docs/data-safety.md` in the same PR. `/wish-epic-close` runs the full mode.
-- **Pull requests** target `main` with the template: what changed (database / Edge Functions / data layer / UI), acceptance criteria covered, manual test steps, tradeoffs. CI must be green.
+- **Pull requests** target `main` with the template: what changed (database / Edge Functions / data layer / UI), acceptance criteria covered, manual test steps, tradeoffs. CI must be green. The title follows the commit convention and the description is kept short, because both become the squash commit on `main` (§ GitHub).
 - **Ask before:** adding a dependency, adding a native module, changing the database schema outside a ticket, deleting files, writing to the remote database, running anything on EAS, pushing, or opening a PR. Running `/wish-git-ship` is the developer's request to push and open a PR.
 
 ## Working on your own
