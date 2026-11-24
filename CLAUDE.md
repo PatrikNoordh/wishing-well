@@ -149,7 +149,7 @@ English is the working language. Everything in this repo is written in English: 
 
 - New UI text goes into `en.json` first, then `sv.json`, in the same commit. Never hard-code UI text in components.
 - Everything written about the app names the UI by its English text from `en.json`: "**+ Add wish**", never its Swedish label from `sv.json`. Docs, tickets, PRs, issue comments, manual test steps, commits and code comments all do, so anyone can follow them. The terms are in `docs/ui-spec.md` § UI terms (en → sv); a new term is added there.
-- No Swedish anywhere outside `src/locales/sv.json`, except the allowlist in `scripts/check-english.sh`: the glossary in `docs/ui-spec.md`, and `docs/journal.md` and `docs/decisions/0011-name-and-slogan.md`, which quote the app's old name as history. Test data is in English. A Swedish text that is itself the subject (a translation fix) is quoted in the PR with the English beside it.
+- No Swedish anywhere outside `src/locales/sv.json`, except the allowlist in `scripts/check-english.sh`: `src/locales/native/sv.json` (the Swedish system texts, such as permission prompts, that `app.json` `locales` reads), the glossary in `docs/ui-spec.md`, and `docs/journal.md` and `docs/decisions/0011-name-and-slogan.md`, which quote the app's old name as history. Test data is in English. A Swedish text that is itself the subject (a translation fix) is quoted in the PR with the English beside it.
 - `bash scripts/check-english.sh` fails on any Swedish letter (a with ring, a or o with diaeresis, either case) outside the allowlist. CI runs it in the `language` job, and `/wish-implement-ticket` and `/wish-git-ship` run it before every commit and push.
 
 ## GitHub

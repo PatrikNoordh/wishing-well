@@ -1,0 +1,6 @@
+{
+  "ios": {
+    "NSCameraUsageDescription": "Wishing Well använder kameran så att du kan fota något du önskar dig.",
+    "NSPhotoLibraryUsageDescription": "Wishing Well öppnar dina bilder så att du kan lägga till en bild eller en skärmdump på en önskan."
+  }
+}

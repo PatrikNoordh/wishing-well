@@ -390,9 +390,14 @@ Small problems and improvements noticed while working on a ticket but outside it
 
 Format: `- [ ] <What is wrong or could be better> — <file or screen> (found in WISH-<N>)`
 
+- [ ] `npm audit` reports 20 moderate advisories, all `glob`/`minimatch` (GHSA-g3hv-75wg-m249, GHSA-3g3m-2fjr-6pw4) inside Jest, `jest-expo` and `@expo/fingerprint`: build and test tooling, nothing in the app bundle. npm's only "fix" is downgrading to SDK 52; recheck on each SDK patch — `package.json` (found in WISH-1)
+
 
 ## Found while reviewing PRs
 
 Findings from `/wish-review-pr`. Blockers and real bugs are fixed on the branch before the merge; they do not go here. Small things get one line each, so they are not forgotten. They are triaged at the epic checkpoint like the list above.
 
 Format: `- [ ] <What could be better> — <file> (PR #<n>, WISH-<N>)`
+
+- [ ] Android Auto Backup is on by default (`android.allowBackup`), so the Supabase session WISH-6 stores could be copied to the user's Google Drive backup; decide in WISH-6 whether to turn it off or exclude the session — `app.json` (PR #29, WISH-1)
+- [ ] `extra.router.asyncRoutes.web` is a template leftover for a web build the app does not have — `app.json` (PR #29, WISH-1)

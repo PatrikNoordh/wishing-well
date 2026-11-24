@@ -6,6 +6,7 @@
 #
 # Allowlist:
 #   src/locales/sv.json                    the Swedish translation of the UI
+#   src/locales/native/sv.json             the Swedish system texts (permissions), for app.json locales
 #   docs/ui-spec.md                        the glossary table "UI terms (en → sv)"
 #   docs/journal.md                        quotes the app's old name as history
 #   docs/decisions/0011-name-and-slogan.md quotes the app's old name as history
@@ -14,7 +15,7 @@
 set -euo pipefail
 cd "$(git rev-parse --show-toplevel)"
 
-export ALLOW='^(src/locales/sv\.json|docs/ui-spec\.md|docs/journal\.md|docs/decisions/0011-name-and-slogan\.md)$'
+export ALLOW='^(src/locales/sv\.json|src/locales/native/sv\.json|docs/ui-spec\.md|docs/journal\.md|docs/decisions/0011-name-and-slogan\.md)$'
 git ls-files -z | perl -0 -ne '
   BEGIN { $| = 1 }
   chomp;
