@@ -13,6 +13,11 @@ Format:
 
 ---
 
+## 2026-11-24 — WISH-2: CI that fails when it should
+**What happened:** CI was already green, so the work was proving it can go red. A throwaway commit let the owner see reservations on their own wishes and added an unused variable. The RLS job stopped at check 19 ("owner sees reservations"), but the lint step would have passed: `expo lint` exits 0 on warnings. It now runs with `--max-warnings 0`. The `app` job also lost its "skip without a `package.json`" guard from before the app existed, which would have shown green with nothing checked. Branch protection then failed with a 403: GitHub Free only protects branches on public repos. The repo was made public after a scan of every file version, issue and PR for keys and personal data found none.
+**What I learned / decided:** Green only means something once you have seen red. A guard written for the time before something exists has to go when it arrives, or it turns into a silent pass. `main` now takes changes only through a PR with all four jobs green, for the admin too.
+**Next:** WISH-3, the theme from the design tokens.
+
 ## 2026-11-21 — WISH-1: the Expo app
 **What happened:** Created the app from the SDK 58 default template, kept only the 12 of its 23 runtime dependencies that an empty Expo Router app needs, and added a development build, ESLint with Prettier, Jest with React Native Testing Library, and EAS profiles. Three surprises: npm refused to install the test tooling until `react-dom` was pinned to React's exact version (an optional web peer of Expo Router); TypeScript 6 no longer loads `@types/*` packages by itself, so the Jest globals are named in `tsconfig.json`; and in Jest `expo-constants` has no app config, so the start-screen test feeds it `app.json`.
 **What I learned / decided:** A template is a demo as much as a starting point: every dependency left in is one more thing to build, update and explain. The permission texts are written in English, and Expo's `locales` setting carries the Swedish ones into the iOS build; Android shows its own system dialog. An `expo prebuild` in a scratch folder showed both in the generated projects before any build credit was spent.
