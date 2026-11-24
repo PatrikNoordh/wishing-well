@@ -168,6 +168,7 @@ There is no shared transaction between Postgres and Storage. Each flow picks the
 | Applying a migration to the project | developer, after `--dry-run` | `CLAUDE.md` § Workflow; `.claude/settings.json` refuses remote commands for Claude |
 | Setting Edge Function secrets (AI keys) | developer | never in the repo; `.env.example` lists none |
 | EAS builds and updates that reach phones | developer | `.claude/settings.json` refuses `eas` for Claude |
+| Merging a PR into `main` | developer, with **Squash and merge** | branch protection on `main`: a PR, the four CI jobs (`RLS tests` included) green on an up-to-date branch, also for admins; proven red in run 45352302606 (WISH-2) |
 
 ## 7. Known gaps
 
