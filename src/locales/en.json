@@ -1,0 +1,10 @@
+{
+  "app": {
+    "name": "Wishing Well",
+    "slogan": "Ooh, I want one of those!"
+  },
+  "person": {
+    "birthdayInDays_one": "Birthday in {{count}} day",
+    "birthdayInDays_other": "Birthday in {{count}} days"
+  }
+}
