@@ -391,7 +391,6 @@ Small problems and improvements noticed while working on a ticket but outside it
 Format: `- [ ] <What is wrong or could be better> — <file or screen> (found in WISH-<N>)`
 
 - [ ] `npm audit` reports 20 moderate advisories, all `glob`/`minimatch` (GHSA-g3hv-75wg-m249, GHSA-3g3m-2fjr-6pw4) inside Jest, `jest-expo` and `@expo/fingerprint`: build and test tooling, nothing in the app bundle. npm's only "fix" is downgrading to SDK 52; recheck on each SDK patch — `package.json` (found in WISH-1)
-- [ ] The design system artifact differs from the repo: `accent-pressed` in light mode is `#BC8A6F` (4.24:1 under `on-accent`; the app uses `#C18F74`), and its README says to write Swedish first (`CLAUDE.md` § Language: English first) — design system artifact (found in WISH-3)
 - [ ] The splash screen is still the template's blue (`#208AEF`) with the Expo logo, then the app opens in cream — `app.json` (found in WISH-3)
 
 

@@ -9,7 +9,6 @@ export const lightColors = {
   surfaceSunken: '#E7E3DB',
   peach: '#EDDCD2',
   accent: '#CB997E',
-  // tokens.json says #BC8A6F, where onAccent is only 4.24:1. This shade gives 4.5:1.
   accentPressed: '#C18F74',
   onAccent: '#3D3027',
   accentText: '#7A4A33',

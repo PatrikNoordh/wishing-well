@@ -14,7 +14,7 @@ Format:
 ---
 
 ## 2026-11-25 — WISH-3: two languages and the theme
-**What happened:** Text, colours, sizes and formats each got one home. Every guard was broken on purpose and seen to fail: a missing Swedish key, a misspelled key, a limit that differs from the database, a whole-library icon import. The contrast test found one bad pair in the design system: dark text on the pressed accent was 4.24:1 in light mode, so the app uses a slightly lighter shade (`#C18F74`, 4.51:1).
+**What happened:** Text, colours, sizes and formats each got one home. Every guard was broken on purpose and seen to fail: a missing Swedish key, a misspelled key, a limit that differs from the database, a whole-library icon import. The contrast test found one bad pair in the design system: dark text on the pressed accent was 4.24:1 in light mode, so the design system and the app now use a slightly lighter shade (`#C18F74`, 4.51:1).
 **What I learned / decided:** English formats prices and times as in Sweden too (`en-SE`): with `en-GB` the same price reads "SEK 1,299" instead of "1 299 kr". Fonts and icons are imported one file at a time, because Metro would otherwise bundle every weight and every icon.
 **Next:** A new development build (three native modules), then WISH-4.
 
