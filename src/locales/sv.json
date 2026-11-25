@@ -1,0 +1,10 @@
+{
+  "app": {
+    "name": "Wishing Well",
+    "slogan": "Åh, en sån vill jag ha!"
+  },
+  "person": {
+    "birthdayInDays_one": "Fyller år om {{count}} dag",
+    "birthdayInDays_other": "Fyller år om {{count}} dagar"
+  }
+}
