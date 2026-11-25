@@ -401,3 +401,4 @@ Format: `- [ ] <What could be better> — <file> (PR #<n>, WISH-<N>)`
 
 - [ ] Android Auto Backup is on by default (`android.allowBackup`), so the Supabase session WISH-6 stores could be copied to the user's Google Drive backup; decide in WISH-6 whether to turn it off or exclude the session — `app.json` (PR #29, WISH-1)
 - [ ] `extra.router.asyncRoutes.web` is a template leftover for a web build the app does not have — `app.json` (PR #29, WISH-1)
+- [ ] The PR template opens with a `## [WISH-<N>] <Title>` heading that repeats the PR title in the squash commit body, and its Validation list lacks `check-english.sh` — `.github/pull_request_template.md` (PR #30, WISH-2)

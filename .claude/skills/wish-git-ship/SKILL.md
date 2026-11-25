@@ -96,14 +96,19 @@ On conflicts, **stop and report**. Never resolve conflicts automatically. After 
 
 ## Step 6 — Open the PR
 
+Every PR is squash-merged (`CLAUDE.md` § GitHub): the title becomes the commit title on `main` and the description becomes its body. Write both for the history.
+
 Use `.github/pull_request_template.md`, filled in: Summary, What Changed (database, Edge Functions, data layer, UI, tests, native), every AC, manual test steps with who they are run as, tradeoffs, validation. Write it in English and name the UI by its English text, as in `CLAUDE.md` § Language: "All → **Share** → **Anyone with the link**", never the Swedish labels.
 
 ```bash
-gh pr create --repo "$REPO" --base main --title "<type> [WISH-<N>] <Title Case Summary>" --body-file "<filled template>"
+gh pr create --repo "$REPO" --base main --title "(MODEL_NAME) <type> [WISH-<N>] <description>" --body-file "<filled template>"
 ```
 
-- Title: `<type> [WISH-<N>] Title Case Summary`, where type is the main commit type
+- Title: the commit convention, `(MODEL_NAME) <type> [WISH-<N>] imperative description`, where type is the main commit type. At most 65 characters, because GitHub adds ` (#<n>)` when it squashes
+- Description: short and useful as history, a line or two per section. Remove every `<!-- -->` hint from the template. Logs, screenshots and long notes go in a PR comment instead
+- No `Co-Authored-By` trailer by default (`wish-git-commit`). If one is ever added, it goes at the very end of the description, so it survives the squash
 - `Closes #<number>` must be in the body so the issue closes when the PR merges
+- Throwaway and work-in-progress commits on the branch are fine: they never reach `main`
 - Show the PR URL to the developer
 
 ---
@@ -118,6 +123,7 @@ gh pr create --repo "$REPO" --base main --title "<type> [WISH-<N>] <Title Case S
 - **Edge Function:** the developer deploys it (`npx supabase functions deploy <name>`) before the merge when the code on `main` will call it, and after the merge otherwise. New secrets: the developer sets them (`npx supabase secrets set …`)
 - **Native change:** the developer builds and installs a new development build before testing (`eas build --profile development --platform android`)
 - Tell the developer to wait for CI before merging, and suggest `/wish-review-pr <number>`
+- The developer merges with **Squash and merge**, the only merge button the repo allows. If the title or description changed during review, check them once more before the merge, since they become the commit on `main`
 - Always ask (not for `wish/epic-<N>-review`): "Tick AC1–AC<n> on #<number> now that the PR covers them?" Tick them only after a yes, and only the ACs the PR marks `- [x]`, step by step through a file in the scratchpad directory, never in the repo:
   1. Save the current body: `gh issue view <number> --repo "$REPO" --json body -q .body > "<scratchpad>/body<number>.md"`
   2. Copy it to `<scratchpad>/new<number>.md` and change only the verified items from `- [ ]` to `- [x]`. Leave every other line, including `Source: TICKETS.md`, as it is
@@ -137,5 +143,6 @@ gh pr create --repo "$REPO" --base main --title "<type> [WISH-<N>] <Title Case S
 - [ ] Files staged by name, commits follow the format, no `--no-verify`
 - [ ] Push succeeded, no force-push
 - [ ] PR to `main` with the template filled in and `Closes #<number>` (not for `wish/epic-<N>-review`)
+- [ ] PR title follows the commit convention in at most 65 characters, and the description is short, with no `<!-- -->` hints
 - [ ] PR URL shown
 - [ ] Asked whether to tick the issue's ACs (not for `wish/epic-<N>-review`)

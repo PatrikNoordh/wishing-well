@@ -57,14 +57,14 @@ All five must pass. `npm run build` (an `expo export` of the JS bundle) does not
 2. Group by **what changed and why**, not by file
 3. Order: database (migrations, RLS tests) → Edge Functions → data layer (`src/lib/api/`, `src/hooks/`) → UI (`src/app/`, `src/components/`) → tests → docs
 4. Stage each group by name with `git add <files>`. Never `git add .` or `git add -A`
-5. Every commit must build and pass on its own
+5. Every commit must build and pass on its own. The exception is a deliberate throwaway or work-in-progress commit: it is fine on the branch, because the PR is squash-merged and it never reaches `main` (`CLAUDE.md` § GitHub)
 
 ## Rules
 
 - The ticket id repeats on every commit in the branch
 - Imperative mood, subject under 72 characters, no body
 - In English, naming the UI by its English text (`CLAUDE.md` § Language): "show Only me on the glass label", not the Swedish label
-- Never add a `Co-Authored-By` footer or other attribution. The `(MODEL_NAME)` prefix already says who wrote it
+- Never add a `Co-Authored-By` footer or other attribution. The `(MODEL_NAME)` prefix already says who wrote it. Branch commits do not reach `main` anyway: the squash commit takes its title and body from the PR, so a trailer that must survive goes at the end of the PR description (`wish-git-ship`)
 - Never `--no-verify`
 - Never commit `.env`, `.env*.local`, secrets, keystores or the Supabase service role key
 - Never commit directly on `main`

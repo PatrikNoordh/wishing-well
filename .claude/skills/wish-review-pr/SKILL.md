@@ -90,8 +90,9 @@ Read each file completely before forming an opinion. Do not review code you have
 - The change meets the quality bar in `CLAUDE.md`: edge cases handled, no dead code or stray `console.log`, no `TODO` without an issue, nothing outside the ticket's scope
 
 ### PR hygiene
-- Branch `wish/WISH-<N>-...`, commits `(MODEL_NAME) <type> [WISH-<N>] ...`, title `<type> [WISH-<N>] Title Case Summary`
-- Body has Summary, What Changed, Acceptance Criteria, Manual Test Steps, Tradeoffs and `Closes #<n>`
+- Branch `wish/WISH-<N>-...`, commits `(MODEL_NAME) <type> [WISH-<N>] ...`. Throwaway and work-in-progress commits on the branch are fine: the PR is squash-merged (`CLAUDE.md` § GitHub)
+- The title follows the commit convention, `(MODEL_NAME) <type> [WISH-<N>] description`, in at most 65 characters: it becomes the commit title on `main`
+- Body has Summary, What Changed, Acceptance Criteria, Manual Test Steps, Tradeoffs and `Closes #<n>`. It becomes the commit body on `main`, so it is short, has no leftover `<!-- -->` hints, and any `Co-Authored-By` trailer is at the very end. A wrong title or a long body is a 🟡 warning, fixed in the PR before the merge
 - Every acceptance criterion in the issue is either covered or explained
 - The PR body, the docs and the comments name the UI by its English text (`CLAUDE.md` § Language): a Swedish label where "**Who can see this?**" is meant is a 🟡 warning, fixed in the PR body before the merge. `scripts/check-english.sh` catches it in the repo, not in the PR body
 

@@ -7,7 +7,7 @@
     "start": "expo start --dev-client",
     "android": "expo start --dev-client --android",
     "ios": "expo start --dev-client --ios",
-    "lint": "expo lint",
+    "lint": "expo lint --max-warnings 0",
     "test": "jest",
     "build": "expo export --platform android --platform ios"
   },
