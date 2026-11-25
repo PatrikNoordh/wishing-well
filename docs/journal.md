@@ -13,6 +13,11 @@ Format:
 
 ---
 
+## 2026-11-25 — WISH-3: two languages and the theme
+**What happened:** Text, colours, sizes and formats each got one home. Every guard was broken on purpose and seen to fail: a missing Swedish key, a misspelled key, a limit that differs from the database, a whole-library icon import. The contrast test found one bad pair in the design system: dark text on the pressed accent was 4.24:1 in light mode, so the app uses a slightly lighter shade (`#C18F74`, 4.51:1).
+**What I learned / decided:** English formats prices and times as in Sweden too (`en-SE`): with `en-GB` the same price reads "SEK 1,299" instead of "1 299 kr". Fonts and icons are imported one file at a time, because Metro would otherwise bundle every weight and every icon.
+**Next:** A new development build (three native modules), then WISH-4.
+
 ## 2026-11-24 — WISH-2: CI that fails when it should
 **What happened:** CI was already green, so the work was proving it can go red. A throwaway commit let the owner see reservations on their own wishes and added an unused variable. The RLS job stopped at check 19 ("owner sees reservations"), but the lint step would have passed: `expo lint` exits 0 on warnings. It now runs with `--max-warnings 0`. The `app` job also lost its "skip without a `package.json`" guard from before the app existed, which would have shown green with nothing checked. Branch protection then failed with a 403: GitHub Free only protects branches on public repos. The repo was made public after a scan of every file version, issue and PR for keys and personal data found none.
 **What I learned / decided:** Green only means something once you have seen red. A guard written for the time before something exists has to go when it arrives, or it turns into a silent pass. `main` now takes changes only through a PR with all four jobs green, for the admin too. Every PR is squash-merged from now on, so `main` gets one commit per ticket, titled by the PR in the commit convention, while throwaway commits like this ticket's deliberate break stay on the branch.
